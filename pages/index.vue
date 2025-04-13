@@ -1,29 +1,36 @@
 <script setup lang="ts">
-import Button from "~/components/ui/button/Button.vue";
-import Calendar from "~/components/ui/calendar/Calendar.vue";
 import { Sun, Moon } from "lucide-vue-next";
-
-const route = useRoute();
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { NuxtIsland } from "#components";
 const colorMode = useColorMode();
-
-const counter = useState<number>("counter", () => 0);
 </script>
 
 <template>
-  <div class="mb-5">
-    <p>Current route: {{ route.path }}</p>
-    <NuxtIsland name="FirstUser"> </NuxtIsland>
-    <Button @click="counter++" class="mr-1">
-      {{ counter }}
-    </Button>
+  <div class="h-screen overflow-y-hidden p-2">
+    <div class="grid grid-cols-12 min-h-1/6">
+      <h1 class="text-2xl font-bold col-span-4">OSRD frontend dashboard</h1>
+      <div class="col-span-4">
+        <NuxtIsland name="Weather" />
+      </div>
+      <div class="col-span-4 flex justify-end">
+        <Button
+          @click="
+            colorMode.value = colorMode.value === 'light' ? 'dark' : 'light'
+          "
+          class="m-2"
+        >
+          <component :is="colorMode.value === 'light' ? Sun : Moon" />
+        </Button>
+      </div>
+    </div>
+    <Separator />
+    <div class="grid grid-cols-12 h-5/6">
+      <div class="col-span-6 overflow-y-auto">
+        <NuxtIsland name="Issues"> </NuxtIsland>
+      </div>
+      <Separator orientation="vertical" />
+      <div class="col-span-6"></div>
+    </div>
   </div>
-  <div class="flex justify-evenly items-center">
-    <Calendar mode="single" class="rounded-md border" />
-    <Button
-      @click="colorMode.value = colorMode.value === 'light' ? 'dark' : 'light'"
-    >
-      <component :is="colorMode.value === 'light' ? Sun : Moon" />
-    </Button>
-  </div>
-  <NuxtIsland name="Issues"> </NuxtIsland>
 </template>
