@@ -1,12 +1,6 @@
 <script setup lang="ts">
 const prisma = usePrismaClient();
 
-const users = await prisma.user.findMany({
-  include: {
-    tasks: true,
-  },
-});
-
 const tasks = await prisma.task.findMany({
   include: {
     user: true,

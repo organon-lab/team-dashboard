@@ -11,12 +11,18 @@ import { ExternalLink } from "lucide-vue-next";
 
 const { issues } = defineProps({
   issues: {
-    type: Array,
+    type: Array<{
+      number: number;
+      title: string;
+      labels: Array<{ name: string }>;
+      created_at: string;
+      html_url: string;
+    }>,
     default: () => [],
   },
 });
 
-const priorities = {
+const priorities: Record<string, number> = {
   "severity:critical": 3,
   "severity:major": 2,
   "severity:minor": 1,

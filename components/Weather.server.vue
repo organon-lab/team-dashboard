@@ -12,7 +12,13 @@ import {
 
 const { issues } = defineProps({
   issues: {
-    type: Array,
+    type: Array<{
+	number: number;
+	title: string;
+	labels: Array<{ name: string }>;
+	created_at: string;
+	html_url: string;
+    }>,
     default: () => [],
   },
 });

@@ -24,7 +24,7 @@ const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
     <div class="grid grid-cols-12 min-h-1/6">
       <h1 class="text-2xl font-bold col-span-4">OSRD frontend dashboard</h1>
       <div class="col-span-4">
-        <NuxtIsland name="Weather" :props="{ issues }"/>
+        <NuxtIsland name="Weather" :props="{ issues }" />
       </div>
       <div class="col-span-4 flex justify-end">
         <Button
