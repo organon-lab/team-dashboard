@@ -10,15 +10,11 @@ import {
   CircleHelp,
 } from "lucide-vue-next";
 
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
-});
-
-const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
-  owner: "OpenRailAssociation",
-  repo: "osrd",
-  labels: "kind:bug,area:front",
-  per_page: 100,
+const { issues } = defineProps({
+  issues: {
+    type: Array,
+    default: () => [],
+  },
 });
 </script>
 

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Octokit } from "octokit";
 import {
   Table,
   TableBody,
@@ -10,15 +9,11 @@ import {
 } from "@/components/ui/table";
 import { ExternalLink } from "lucide-vue-next";
 
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
-});
-
-const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
-  owner: "OpenRailAssociation",
-  repo: "osrd",
-  labels: "kind:bug,area:front",
-  per_page: 100,
+const { issues } = defineProps({
+  issues: {
+    type: Array,
+    default: () => [],
+  },
 });
 
 const priorities = {

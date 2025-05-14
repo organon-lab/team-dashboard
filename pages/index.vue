@@ -3,7 +3,20 @@ import { Sun, Moon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { NuxtIsland } from "#components";
+import { Octokit } from "octokit";
+
 const colorMode = useColorMode();
+
+const octokit = new Octokit({
+  auth: process.env.GITHUB_TOKEN,
+});
+
+const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
+  owner: "OpenRailAssociation",
+  repo: "osrd",
+  labels: "kind:bug,area:front",
+  per_page: 100,
+});
 </script>
 
 <template>
@@ -11,7 +24,7 @@ const colorMode = useColorMode();
     <div class="grid grid-cols-12 min-h-1/6">
       <h1 class="text-2xl font-bold col-span-4">OSRD frontend dashboard</h1>
       <div class="col-span-4">
-        <NuxtIsland name="Weather" />
+        <NuxtIsland name="Weather" :props="{ issues }"/>
       </div>
       <div class="col-span-4 flex justify-end">
         <Button
@@ -27,10 +40,12 @@ const colorMode = useColorMode();
     <Separator />
     <div class="grid grid-cols-12 h-5/6">
       <div class="col-span-6 overflow-y-auto">
-        <NuxtIsland name="Issues"> </NuxtIsland>
+        <NuxtIsland name="Issues" :props="{ issues }"> </NuxtIsland>
       </div>
       <Separator orientation="vertical" />
-      <div class="col-span-6"></div>
+      <div class="col-span-5">
+        <NuxtIsland name="Tasks"> </NuxtIsland>
+      </div>
     </div>
   </div>
 </template>
