@@ -16,22 +16,22 @@
       pkgs = import nixpkgs {
         inherit system;
       };
-      fixedNode = pkgs.nodejs_22;
-      fixedNodePackages = pkgs.nodePackages.override {
-        nodejs = fixedNode;
+      node = pkgs.nodejs_22;
+      nodePackages = pkgs.nodePackages.override {
+        nodejs = node;
       };
       vuejs = pkgs.vue-language-server;
     in
     {
       devShell = pkgs.mkShell {
         buildInputs = [
-          fixedNode
-          fixedNodePackages.npm
-          fixedNodePackages.typescript
-          fixedNodePackages.typescript-language-server
+          node
+          nodePackages.npm
+          nodePackages.typescript
+          nodePackages.typescript-language-server
+          # nodePackages.prisma
           vuejs
         ];
       };
     });
 }
-
