@@ -7,7 +7,17 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "@nuxtjs/color-mode",
     "nuxt-auth-utils",
+    "@sidebase/nuxt-auth",
   ],
+  auth: {
+    provider: {
+      type: "authjs",
+      trustHost: false,
+      defaultProvider: "github",
+      addDefaultCallbackUrl: true,
+    },
+    globalAppMiddleware: true,
+  },
   shadcn: {
     /**
      * Prefix for all the imported component
