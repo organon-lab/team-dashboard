@@ -17,6 +17,8 @@ const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
   labels: "kind:bug,area:front",
   per_page: 100,
 });
+
+const { signOut } = useAuth();
 </script>
 
 <template>
@@ -27,14 +29,19 @@ const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
         <NuxtIsland name="Weather" :props="{ issues }" />
       </div>
       <div class="col-span-4 flex justify-end">
+	<div class="flex flex-col">
+	<Button @click="signOut" class="m-2">
+	  Sign out
+	</Button>
         <Button
           @click="
             colorMode.value = colorMode.value === 'light' ? 'dark' : 'light'
           "
-          class="m-2"
+          class="m-2 w-fit ml-auto"
         >
           <component :is="colorMode.value === 'light' ? Sun : Moon" />
         </Button>
+	</div>
       </div>
     </div>
     <Separator />
