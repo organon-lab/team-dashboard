@@ -11,7 +11,7 @@ export default NuxtAuthHandler({
     }),
   ],
   callbacks: {
-    async signIn({ user }) {
+    async signIn({ user: currentUser }) {
       const octokit = new Octokit({
         auth: process.env.GITHUB_TOKEN,
       });
@@ -34,11 +34,11 @@ export default NuxtAuthHandler({
         }
       }
 
-      const isCollaborator = contributors.some(
-        (contributor) => contributor.id === +user.id,
+      const isContributor = contributors.some(
+        (contributor) => contributor.id === +currentUser.id,
       );
 
-      return isCollaborator;
+      return isContributor;
     },
   },
 });
