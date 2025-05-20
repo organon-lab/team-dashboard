@@ -38,11 +38,7 @@ export default NuxtAuthHandler({
         (contributor) => contributor.id === +user.id,
       );
 
-      if (!isCollaborator) {
-        return false;
-      }
-
-      return true;
+      return isCollaborator;
     },
   },
 });
