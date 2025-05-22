@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "nuxt-auth-utils",
     "@sidebase/nuxt-auth",
+    "@nuxtjs/mdc",
   ],
   auth: {
     provider: {
@@ -43,6 +44,13 @@ export default defineNuxtConfig({
         clientId: "bla",
         clientSecret: "blabla",
       },
+    },
+  },
+  mdc: {
+    highlight: {
+      theme: "github-dark",
+      langs: ["js", "ts"],
+      wrapperStyle: true,
     },
   },
   devtools: { enabled: true },

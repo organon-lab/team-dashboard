@@ -81,3 +81,63 @@
 *::-webkit-scrollbar {
 	display: none;
 }
+
+.markdown {
+	h1 {
+		@apply text-3xl font-bold;
+	}
+
+	h2 {
+		@apply text-2xl font-bold;
+	}
+
+	h3 {
+		@apply text-xl font-bold;
+	}
+
+	h4 {
+		@apply text-lg font-bold;
+	}
+
+	h5 {
+		@apply text-base font-bold;
+	}
+
+	h6 {
+		@apply text-sm font-bold;
+	}
+
+	a {
+		@apply text-green-400 underline hover:text-green-500;
+	}
+
+	li {
+		list-style: disc;
+		list-style-position: inside;
+	}
+
+	blockquote {
+		@apply border-l-2 pl-4 italic text-muted-foreground;
+	}
+
+	table {
+		@apply border-collapse text-sm border border-border w-full;
+	}
+
+	th {
+		@apply text-muted-foreground;
+	}
+
+	td {
+		@apply border border-border text-center;
+	}
+
+	tr:nth-child(even) {
+		@apply bg-muted;
+	}
+
+  	pre, code {
+		@apply bg-muted rounded p-1;
+	}
+
+}
