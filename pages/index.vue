@@ -23,7 +23,7 @@ const { signOut } = useAuth();
 
 <template>
   <div class="h-screen overflow-y-hidden p-2">
-    <div class="grid grid-cols-12 min-h-1/6">
+    <div class="grid grid-cols-12"  style="height: 12rem">
       <h1 class="text-2xl font-bold col-span-4">OSRD frontend dashboard</h1>
       <div class="col-span-4">
         <NuxtIsland name="Weather" :props="{ issues }" />
@@ -45,13 +45,13 @@ const { signOut } = useAuth();
       </div>
     </div>
     <Separator />
-    <div class="grid grid-cols-12 h-5/6">
+    <div class="grid grid-cols-12" style="height: calc(100vh - 12rem)">
       <div class="col-span-6 overflow-y-auto">
         <NuxtIsland name="Issues" :props="{ issues }"> </NuxtIsland>
       </div>
-      <Separator orientation="vertical" />
-      <div class="col-span-5">
-        <NuxtIsland name="Tasks"> </NuxtIsland>
+      <div class="col-span-6 overflow-y-auto">
+        <!-- <NuxtIsland name="Tasks"> </NuxtIsland> -->
+	<NuxtIsland name="GlobalDocument"> </NuxtIsland>
       </div>
     </div>
   </div>
