@@ -1,49 +1,49 @@
 <script setup lang="ts">
 import { parseMarkdown } from "@nuxtjs/mdc/runtime";
 
-const colorMode = useColorMode();
+const prisma = usePrismaClient();
 
 const md = `
-# Hello MDC <br>
+# Hello MDC <br />
 ___
 [mdc doc](https://nuxt.com/modules/mdc) 
 
-<br>
+<br />
 
-*italic* <br>
-**bold** <br> 
-~~rate~~ <br>
+*italic* <br />
+**bold** <br /> 
+~~rate~~ <br />
 
-<br>
+<br />
 
 \`\`\`
 code
 \`\`\`
 
-<br>
+<br />
 
 \`\`\`js
 const test = "code test"
 console.log(test)
 \`\`\`
 
-<br>
+<br />
 
 - bla
 - rebla
 - et rerebla
 
-<br>
+<br />
 
 - [ ] test
 - [x] test
 
-<br>
+<br />
 
-> test <br>
+> test <br />
 > retest
 
-<br>
+<br />
 
 |col1|col2|col3|
 |---|---|---|
@@ -52,12 +52,18 @@ console.log(test)
 |test|test|test|
 |test|test|test|
 
-<br>
+<br />
 
 ![cthulhu](https://www.pngall.com/wp-content/uploads/13/Cthulhu-Monster-PNG-Clipart.png)
 `;
 
-const { data: ast } = await useAsyncData("markdown", () => parseMarkdown(md));
+const document = await prisma.post.findUnique({
+	where: {
+		id: 1,
+	},
+});
+
+const { data: ast } = await useAsyncData("markdown", () => parseMarkdown(document?.content || md));
 </script>
 
 <template>
