@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { NuxtIsland } from "#components";
 import { Octokit } from "octokit";
+import GlobalDocumentPreview from "@/components/GlobalDocumentPreview.vue";
+import GlobalDocumentEditor from "@/components/GlobalDocumentEditor.vue";
 
 const colorMode = useColorMode();
 
@@ -19,39 +21,102 @@ const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
 });
 
 const { signOut } = useAuth();
+
+const previewRef = ref();
+const isEditing = ref(false);
+const selectedReport = ref<any>(null);
+
+const refreshPreview = () => {
+  if (previewRef.value) {
+    previewRef.value.fetchAllReports();
+  }
+};
+
+const handleEditReport = (report: any) => {
+  console.log("Index.vue: Émission de globaldocpreview bien reçue:", report);
+  selectedReport.value = report;
+  isEditing.value = true;
+};
+
+const handleCreateNewReport = () => {
+  console.log("Créer nouveau rapport");
+  selectedReport.value = null;
+  isEditing.value = true;
+};
+
+const handleSaveReport = () => {
+  console.log(`Index.vue: Sauvegarde du rapport`, selectedReport.value);
+  isEditing.value = false;
+  selectedReport.value = null;
+  refreshPreview();
+};
+
+const handleCancelEdit = () => {
+  isEditing.value = false;
+  selectedReport.value = null;
+};
 </script>
 
 <template>
   <div class="h-screen overflow-y-hidden p-2">
-    <div class="grid grid-cols-12 min-h-1/6">
-      <h1 class="text-2xl font-bold col-span-4">OSRD frontend dashboard</h1>
-      <div class="col-span-4">
+    <div class="grid grid-cols-12" style="height: 12rem">
+      <h1 class="text-2xl font-bold col-span-3">OSRD frontend dashboard</h1>
+      <div class="col-span-6">
         <NuxtIsland name="Weather" :props="{ issues }" />
       </div>
-      <div class="col-span-4 flex justify-end">
-	<div class="flex flex-col">
-	<Button @click="signOut" class="m-2">
-	  Sign out
-	</Button>
-        <Button
-          @click="
-            colorMode.value = colorMode.value === 'light' ? 'dark' : 'light'
-          "
-          class="m-2 w-fit ml-auto"
-        >
-          <component :is="colorMode.value === 'light' ? Sun : Moon" />
-        </Button>
-	</div>
+      <div class="col-span-3 flex justify-end">
+        <div class="flex flex-col">
+          <Button @click="signOut" class="m-2"> Sign out </Button>
+          <Button
+            @click="
+              colorMode.value = colorMode.value === 'light' ? 'dark' : 'light'
+            "
+            class="m-2 w-fit ml-auto"
+          >
+            <component :is="colorMode.value === 'light' ? Sun : Moon" />
+          </Button>
+        </div>
       </div>
     </div>
     <Separator />
-    <div class="grid grid-cols-12 h-5/6">
+    <div class="grid grid-cols-12" style="height: calc(100vh - 12rem)">
+      <!-- Left section : Tasks or markdown editor -->
       <div class="col-span-6 overflow-y-auto">
-        <NuxtIsland name="Issues" :props="{ issues }"> </NuxtIsland>
+        <ClientOnly>
+          <template v-if="isEditing">
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold">
+                  {{
+                    selectedReport
+                      ? `Éditer rapport #${selectedReport.id}`
+                      : "Nouveau rapport"
+                  }}
+                </h2>
+                <div class="space-x-2">
+                  <Button @click="handleCancelEdit" variant="outline"
+                    >Annuler</Button
+                  >
+                </div>
+              </div>
+              <GlobalDocumentEditor
+                :existing-report="selectedReport"
+                @post-saved="handleSaveReport"
+              />
+            </div>
+          </template>
+          <template v-else>
+            <NuxtIsland name="Issues" :props="{ issues }" />
+          </template>
+        </ClientOnly>
       </div>
-      <Separator orientation="vertical" />
-      <div class="col-span-5">
-        <NuxtIsland name="Tasks"> </NuxtIsland>
+      <!-- Right section : Global document preview -->
+      <div class="col-span-6 overflow-y-auto">
+        <GlobalDocumentPreview
+          ref="previewRef"
+          @edit-report="handleEditReport"
+          @create-new-report="handleCreateNewReport"
+        />
       </div>
     </div>
   </div>
