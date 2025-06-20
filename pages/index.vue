@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
 import { Sun, Moon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -6,6 +7,8 @@ import { NuxtIsland } from "#components";
 import { Octokit } from "octokit";
 import MeetingReportList from "@/components/MeetingReportList.vue";
 import MeetingReportEditor from "@/components/MeetingReportEditor.vue";
+import MeetingReportViewer from "@/components/MeetingReportViewer.vue";
+import type { Report } from "~/types/markdownTypes";
 
 const colorMode = useColorMode();
 
@@ -22,37 +25,58 @@ const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
 
 const { signOut } = useAuth();
 
-const previewRef = ref();
+const reports = ref<Report[]>([]);
 const isEditing = ref(false);
-const selectedReport = ref<any>(null);
+const isViewing = ref(false);
+const selectedReport = ref<Report | null>(null);
 
-const refreshPreview = () => {
-  if (previewRef.value) {
-    previewRef.value.fetchAllReports();
+const fetchAllReports = async () => {
+  try {
+    const data = await $fetch<Report[]>("/api/eventHandler?all=true");
+    reports.value = data;
+  } catch (error) {
+    console.error("Failed to fetch reports:", error);
+    reports.value = [];
   }
 };
 
-const handleEditReport = (report: any) => {
-  console.log("Index.vue: Émission de meetingreportlist bien reçue:", report);
+onMounted(fetchAllReports);
+
+const handleEditReport = (report: Report) => {
   selectedReport.value = report;
   isEditing.value = true;
+  isViewing.value = false;
+};
+
+const handleViewReport = (report: Report) => {
+  selectedReport.value = report;
+  isViewing.value = true;
+  isEditing.value = false;
+};
+
+const handleNavigate = (newReport: Report) => {
+  selectedReport.value = newReport;
 };
 
 const handleCreateNewReport = () => {
-  console.log("Créer nouveau rapport");
   selectedReport.value = null;
   isEditing.value = true;
+  isViewing.value = false;
 };
 
 const handleSaveReport = () => {
-  console.log(`Index.vue: Sauvegarde du rapport`, selectedReport.value);
   isEditing.value = false;
   selectedReport.value = null;
-  refreshPreview();
+  fetchAllReports();
 };
 
 const handleCancelEdit = () => {
   isEditing.value = false;
+  selectedReport.value = null;
+};
+
+const handleBackToList = () => {
+  isViewing.value = false;
   selectedReport.value = null;
 };
 </script>
@@ -112,9 +136,18 @@ const handleCancelEdit = () => {
       </div>
       <!-- Right section : Meeting report list -->
       <div class="col-span-6 overflow-y-auto">
+        <MeetingReportViewer
+          v-if="isViewing && selectedReport"
+          :report="selectedReport"
+          :reports-list="reports"
+          @back-to-list="handleBackToList"
+          @navigate="handleNavigate"
+        />
         <MeetingReportList
-          ref="previewRef"
+          v-else
+          :reports="reports"
           @edit-report="handleEditReport"
+          @view-report="handleViewReport"
           @create-new-report="handleCreateNewReport"
         />
       </div>
