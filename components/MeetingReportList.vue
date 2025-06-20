@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
-import { Eye, Edit } from "lucide-vue-next";
+import { Eye, Edit, Pencil } from "lucide-vue-next";
 import type { Report } from "~/types/markdownTypes";
 import {
   Card,
@@ -15,7 +15,12 @@ defineProps<{
   reports: Report[];
 }>();
 
-const emit = defineEmits(["edit-report", "view-report", "create-new-report"]);
+const emit = defineEmits([
+  "edit-report",
+  "view-report",
+  "create-new-report",
+  "edit-title",
+]);
 
 const handleEdit = (report: Report) => {
   emit("edit-report", report);
@@ -27,6 +32,10 @@ const handleView = (report: Report) => {
 
 const handleCreateNew = () => {
   emit("create-new-report");
+};
+
+const handleEditTitle = (report: Report) => {
+  emit("edit-title", report);
 };
 </script>
 
@@ -42,9 +51,19 @@ const handleCreateNew = () => {
           <p>Aucun rapport trouvé. Créez-en un nouveau !</p>
         </CardContent>
       </Card>
-      <Card v-for="report in reports" :key="report.id">
+      <Card v-for="report in reports" :key="report.id" class="group">
         <CardHeader>
-          <CardTitle>{{ report.title }}</CardTitle>
+          <div class="flex items-center gap-x-4">
+            <CardTitle>{{ report.title }}</CardTitle>
+            <Button
+              @click="handleEditTitle(report)"
+              variant="ghost"
+              size="icon"
+              class="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <Pencil class="h-4 w-4" />
+            </Button>
+          </div>
           <CardDescription>
             Rapport #{{ report.id }} - Créé le
             {{ new Date(report.createdAt).toLocaleDateString() }}
