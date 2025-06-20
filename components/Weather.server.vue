@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Octokit } from "octokit";
+import { Badge } from "@/components/ui/badge";
 import {
   Sun,
   CloudSunRain,
@@ -13,11 +14,11 @@ import {
 const { issues } = defineProps({
   issues: {
     type: Array<{
-	number: number;
-	title: string;
-	labels: Array<{ name: string }>;
-	created_at: string;
-	html_url: string;
+      number: number;
+      title: string;
+      labels: Array<{ name: string }>;
+      created_at: string;
+      html_url: string;
     }>,
     default: () => [],
   },
@@ -35,7 +36,7 @@ const { issues } = defineProps({
       "
       :size="64"
       :color="
-        (issues.length < 20 && '#f6e05e') ||
+        (issues.length < 20 && '#f6e00e') ||
         (issues.length < 50 && '#f6ad55') ||
         '#f56565'
       "
@@ -44,51 +45,50 @@ const { issues } = defineProps({
       There are currently {{ issues.length }} frontend bugs in the OSRD
       repository.
     </p>
-    <div
-      class="flex justify-between text-stone-200 bg-stone-700 rounded-full px-4 py-2 mt-2"
-    >
-      <p class="flex mr-4 items-center">
-        <component
-          :is="TriangleAlert"
-          :size="16"
-          color="#f56565"
-          class="mr-2"
-        />
+    <div class="flex items-center space-x-1 rounded-full bg-secondary p-1 mt-2">
+      <Badge
+        class="h-7 border-transparent bg-red-700/80 px-3 text-sm text-white hover:bg-red-700"
+      >
+        <TriangleAlert :size="14" class="mr-1.5" />
         critical:
         {{
           issues.filter((issue) =>
-            issue.labels.some((label) => label.name.includes("critical")),
+            issue.labels.some((label) => label.name.includes("critical"))
           ).length
         }}
-      </p>
-      <p class="flex mr-4 items-center">
-        <component :is="OctagonAlert" :size="16" color="#f6ad55" class="mr-2" />
+      </Badge>
+      <Badge
+        class="h-7 border-transparent bg-orange-600/80 px-3 text-sm text-white hover:bg-orange-600"
+      >
+        <OctagonAlert :size="14" class="mr-1.5" />
         major:
         {{
           issues.filter((issue) =>
-            issue.labels.some((label) => label.name.includes("major")),
+            issue.labels.some((label) => label.name.includes("major"))
           ).length
         }}
-      </p>
-      <p class="flex mr-4 items-center">
-        <component :is="CircleAlert" :size="16" color="#f6e05e" class="mr-2" />
+      </Badge>
+      <Badge
+        class="h-7 border-transparent bg-yellow-500/80 px-3 text-sm text-gray-900 hover:bg-yellow-500"
+      >
+        <CircleAlert :size="14" class="mr-1.5" />
         minor:
         {{
           issues.filter((issue) =>
-            issue.labels.some((label) => label.name.includes("minor")),
+            issue.labels.some((label) => label.name.includes("minor"))
           ).length
         }}
-      </p>
-      <p class="flex items-center">
-        <component :is="CircleHelp" :size="16" color="gray" class="mr-2" />
+      </Badge>
+      <Badge variant="outline" class="h-7 px-3 text-sm">
+        <CircleHelp :size="14" class="mr-1.5" />
         untagged:
         {{
           issues.filter(
             (issue) =>
-              !issue.labels.some((label) => label.name.startsWith("severity:")),
+              !issue.labels.some((label) => label.name.startsWith("severity:"))
           ).length
         }}
-      </p>
+      </Badge>
     </div>
   </div>
 </template>
