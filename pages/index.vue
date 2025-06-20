@@ -8,6 +8,7 @@ import { Octokit } from "octokit";
 import MeetingReportList from "@/components/MeetingReportList.vue";
 import MeetingReportEditor from "@/components/MeetingReportEditor.vue";
 import MeetingReportViewer from "@/components/MeetingReportViewer.vue";
+import TitleEditDialog from "@/components/TitleEditDialog.vue";
 import type { Report } from "~/types/markdownTypes";
 
 const colorMode = useColorMode();
@@ -29,6 +30,10 @@ const reports = ref<Report[]>([]);
 const isEditing = ref(false);
 const isViewing = ref(false);
 const selectedReport = ref<Report | null>(null);
+
+// State for the title editing modal
+const isTitleEditorOpen = ref(false);
+const reportForTitleEdit = ref<Report | null>(null);
 
 const fetchAllReports = async () => {
   try {
@@ -78,6 +83,31 @@ const handleCancelEdit = () => {
 const handleBackToList = () => {
   isViewing.value = false;
   selectedReport.value = null;
+};
+
+const handleOpenTitleEditor = (report: Report) => {
+  reportForTitleEdit.value = report;
+  isTitleEditorOpen.value = true;
+};
+
+const handleSaveTitle = async ({
+  id,
+  newTitle,
+}: {
+  id: number;
+  newTitle: string;
+}) => {
+  try {
+    await $fetch(`/api/eventHandler/${id}`, {
+      method: "PUT",
+      body: { title: newTitle },
+    });
+    // Close the dialog and refresh the list
+    isTitleEditorOpen.value = false;
+    await fetchAllReports();
+  } catch (error) {
+    console.error("Failed to save title:", error);
+  }
 };
 </script>
 
@@ -149,8 +179,17 @@ const handleBackToList = () => {
           @edit-report="handleEditReport"
           @view-report="handleViewReport"
           @create-new-report="handleCreateNewReport"
+          @edit-title="handleOpenTitleEditor"
         />
       </div>
     </div>
+
+    <!-- The dialog is now controlled from the parent page -->
+    <TitleEditDialog
+      :open="isTitleEditorOpen"
+      :report="reportForTitleEdit"
+      @update:open="isTitleEditorOpen = $event"
+      @save-title="handleSaveTitle"
+    />
   </div>
 </template>
