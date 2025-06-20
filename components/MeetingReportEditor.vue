@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import { Button } from "@/components/ui/button";
-import type { Report } from "~/types/markdownType";
+import type { Report } from "~/types/markdownTypes";
 import { Textarea } from "./ui/textarea";
 
 const props = defineProps<{
@@ -55,7 +55,9 @@ const savePost = async () => {
 
 <template>
   <div class="flex items-center justify-between p-2">
-    <h1 class="text-2xl font-bold text-center text-red-400">Document Editor</h1>
+    <h1 class="text-2xl font-bold text-center text-red-400">
+      Meeting Report Editor
+    </h1>
     <Button @click="savePost" class="m-2"> Save </Button>
   </div>
   <Textarea v-model="actualDocument" />

@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { NuxtIsland } from "#components";
 import { Octokit } from "octokit";
-import GlobalDocumentPreview from "@/components/GlobalDocumentPreview.vue";
-import GlobalDocumentEditor from "@/components/GlobalDocumentEditor.vue";
+import MeetingReportList from "@/components/MeetingReportList.vue";
+import MeetingReportEditor from "@/components/MeetingReportEditor.vue";
 
 const colorMode = useColorMode();
 
@@ -33,7 +33,7 @@ const refreshPreview = () => {
 };
 
 const handleEditReport = (report: any) => {
-  console.log("Index.vue: Émission de globaldocpreview bien reçue:", report);
+  console.log("Index.vue: Émission de meetingreportlist bien reçue:", report);
   selectedReport.value = report;
   isEditing.value = true;
 };
@@ -99,7 +99,7 @@ const handleCancelEdit = () => {
                   >
                 </div>
               </div>
-              <GlobalDocumentEditor
+              <MeetingReportEditor
                 :existing-report="selectedReport"
                 @post-saved="handleSaveReport"
               />
@@ -110,9 +110,9 @@ const handleCancelEdit = () => {
           </template>
         </ClientOnly>
       </div>
-      <!-- Right section : Global document preview -->
+      <!-- Right section : Meeting report list -->
       <div class="col-span-6 overflow-y-auto">
-        <GlobalDocumentPreview
+        <MeetingReportList
           ref="previewRef"
           @edit-report="handleEditReport"
           @create-new-report="handleCreateNewReport"
