@@ -50,7 +50,7 @@ onMounted(fetchAllReports);
 const handleEditReport = (report: Report) => {
   selectedReport.value = report;
   isEditing.value = true;
-  isViewing.value = false;
+  isViewing.value = true;
 };
 
 const handleViewReport = (report: Report) => {
@@ -71,12 +71,14 @@ const handleCreateNewReport = () => {
 
 const handleSaveReport = () => {
   isEditing.value = false;
+  isViewing.value = false;
   selectedReport.value = null;
   fetchAllReports();
 };
 
 const handleCancelEdit = () => {
   isEditing.value = false;
+  isViewing.value = false;
   selectedReport.value = null;
 };
 
@@ -164,7 +166,7 @@ const handleSaveTitle = async ({
           </template>
         </ClientOnly>
       </div>
-      <!-- Right section : Meeting report list -->
+      <!-- Right section : Meeting report list or viewer -->
       <div class="col-span-6 overflow-y-auto">
         <MeetingReportViewer
           v-if="isViewing && selectedReport"
