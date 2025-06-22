@@ -75,36 +75,39 @@
 
 .markdown {
   h1 {
-    @apply text-3xl font-bold;
+    @apply text-2xl font-bold text-primary mb-4;
   }
 
   h2 {
-    @apply text-2xl font-bold;
+    @apply text-xl font-semibold text-primary mb-3;
   }
 
   h3 {
-    @apply text-xl font-bold;
+    @apply text-lg font-semibold mb-2;
   }
 
-  h4 {
-    @apply text-lg font-bold;
-  }
-
-  h5 {
-    @apply text-base font-bold;
-  }
-
+  h4,
+  h5,
   h6 {
-    @apply text-sm font-bold;
+    @apply text-base font-semibold mb-1;
   }
 
+  /* General style for links */
   a {
     @apply text-green-400 underline hover:text-green-500;
   }
+  /* Because of mdc render we need to override the style for links that are INSIDE titles */
+  h1 a,
+  h2 a,
+  h3 a,
+  h4 a,
+  h5 a,
+  h6 a {
+    @apply text-inherit no-underline hover:text-inherit; /* Inherit color and remove underline */
+  }
 
   li {
-    list-style: disc;
-    list-style-position: inside;
+    @apply list-disc list-inside;
   }
 
   blockquote {
