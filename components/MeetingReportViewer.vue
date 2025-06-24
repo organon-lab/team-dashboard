@@ -5,17 +5,30 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { ParsedMarkdownType, Report } from "~/types/markdownTypes";
 import { parseMarkdown } from "@nuxtjs/mdc/runtime";
-import { ChevronLeft, ChevronRight } from "lucide-vue-next";
+import { ChevronLeft, ChevronRight, Pencil, PenLine } from "lucide-vue-next";
 
 const props = defineProps<{
   report: Report;
   reportsList?: Report[];
 }>();
 
-const emit = defineEmits(["back-to-list", "navigate"]);
+const emit = defineEmits([
+  "back-to-list",
+  "navigate",
+  "edit-title",
+  "edit-report",
+]);
 
 const handleBackToList = () => {
   emit("back-to-list");
+};
+
+const handleEditTitle = () => {
+  emit("edit-title", props.report);
+};
+
+const handleEditReport = () => {
+  emit("edit-report", props.report);
 };
 
 const ast = ref<ParsedMarkdownType | null>(null);
@@ -99,6 +112,7 @@ watch(
       <h2 class="text-xl font-bold">Visualisation du rapport</h2>
       <div class="flex items-center space-x-2">
         <Button
+          v-if="canNavigate"
           @click="navigate('prev')"
           :disabled="isFirst"
           variant="outline"
@@ -107,6 +121,7 @@ watch(
           <ChevronLeft class="w-4 h-4" />
         </Button>
         <Button
+          v-if="canNavigate"
           @click="navigate('next')"
           :disabled="isLast"
           variant="outline"
@@ -122,7 +137,18 @@ watch(
 
     <Card>
       <CardHeader>
-        <CardTitle>{{ report.title }}</CardTitle>
+        <div class="flex items-center gap-x-2">
+          <CardTitle>{{ report.title }}</CardTitle>
+          <Button
+            @click="handleEditTitle"
+            variant="ghost"
+            size="icon"
+            class="h-5 w-5 shrink-0 opacity-80 hover:opacity-100 transition-opacity"
+            title="Éditer le titre"
+          >
+            <PenLine class="h-4 w-4" />
+          </Button>
+        </div>
         <p class="text-sm text-muted-foreground">
           Rapport #{{ report.id }} - Créé le
           {{ new Date(report.createdAt).toLocaleDateString() }}
@@ -142,9 +168,20 @@ watch(
           <Separator v-if="showSeparator" />
 
           <div v-if="parsedMainContent?.body">
-            <h1 class="mb-2 text-base font-semibold text-muted-foreground">
-              Compte-rendu :
-            </h1>
+            <div class="flex items-center justify-between mb-2">
+              <h1 class="text-base font-semibold text-muted-foreground">
+                Compte-rendu :
+              </h1>
+              <Button
+                @click="handleEditReport"
+                variant="ghost"
+                size="icon"
+                class="h-5 w-5 shrink-0 opacity-80 hover:opacity-100 transition-opacity"
+                title="Éditer le compte-rendu"
+              >
+                <Pencil class="h-4 w-4" />
+              </Button>
+            </div>
             <div class="markdown">
               <MDCRenderer :body="parsedMainContent.body" />
             </div>

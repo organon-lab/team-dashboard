@@ -174,6 +174,8 @@ const handleSaveTitle = async ({
           :reports-list="reports"
           @back-to-list="handleBackToList"
           @navigate="handleNavigate"
+          @edit-title="handleOpenTitleEditor"
+          @edit-report="handleEditReport"
         />
         <MeetingReportList
           v-else
@@ -181,7 +183,7 @@ const handleSaveTitle = async ({
           @edit-report="handleEditReport"
           @view-report="handleViewReport"
           @create-new-report="handleCreateNewReport"
-          @edit-title="handleOpenTitleEditor"
+          @edit-title="handleEditReport"
         />
       </div>
     </div>
