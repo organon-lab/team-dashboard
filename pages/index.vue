@@ -186,7 +186,6 @@ const handleSaveTitle = async ({
       </div>
     </div>
 
-    <!-- The dialog is now controlled from the parent page -->
     <TitleEditDialog
       :open="isTitleEditorOpen"
       :report="reportForTitleEdit"
@@ -194,4 +193,5 @@ const handleSaveTitle = async ({
       @save-title="handleSaveTitle"
     />
   </div>
+  <FloatingFrontIssues />
 </template>
