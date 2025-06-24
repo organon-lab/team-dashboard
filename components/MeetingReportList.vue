@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -16,8 +15,10 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import ReportSummary from "./ReportSummary.vue";
+import { ref, computed } from "vue";
+import Pagination from "./Pagination.vue";
 
-defineProps<{
+const props = defineProps<{
   reports: Report[];
 }>();
 
@@ -43,21 +44,31 @@ const handleCreateNew = () => {
 const handleEditTitle = (report: Report) => {
   emit("edit-title", report);
 };
+
+const reportsPerPage = 4;
+const currentPage = ref(1);
+const totalPages = computed(() =>
+  Math.ceil(props.reports.length / reportsPerPage)
+);
+const paginatedReports = computed(() => {
+  const start = (currentPage.value - 1) * reportsPerPage;
+  return props.reports.slice(start, start + reportsPerPage);
+});
 </script>
 
 <template>
   <div class="p-4">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-xl font-bold">Rapports de réunion</h2>
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold">Comptes rendus de points front</h2>
       <Button @click="handleCreateNew">Nouveau rapport</Button>
     </div>
     <div class="space-y-4">
-      <Card v-if="reports.length === 0">
+      <Card v-if="props.reports.length === 0">
         <CardContent class="pt-6">
           <p>Aucun rapport trouvé. Créez-en un nouveau !</p>
         </CardContent>
       </Card>
-      <div v-for="report in reports" :key="report.id">
+      <div v-for="report in paginatedReports" :key="report.id">
         <Collapsible>
           <Card class="group">
             <CardHeader>
@@ -109,7 +120,6 @@ const handleEditTitle = (report: Report) => {
                 </div>
               </div>
             </CardDescription>
-            <!-- <CardFooter class="flex items-center justify-between"> -->
 
             <CollapsibleContent>
               <ReportSummary :report="report" />
@@ -117,6 +127,12 @@ const handleEditTitle = (report: Report) => {
           </Card>
         </Collapsible>
       </div>
+    </div>
+    <div
+      v-if="totalPages > 1"
+      class="flex justify-center items-center gap-4 mt-6"
+    >
+      <Pagination v-model:currentPage="currentPage" :total-pages="totalPages" />
     </div>
   </div>
 </template>
