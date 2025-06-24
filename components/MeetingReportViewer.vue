@@ -3,7 +3,7 @@ import { ref, watch, computed } from "vue";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { Report } from "~/types/markdownTypes";
+import type { ParsedMarkdownType, Report } from "~/types/markdownTypes";
 import { parseMarkdown } from "@nuxtjs/mdc/runtime";
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 
@@ -18,7 +18,7 @@ const handleBackToList = () => {
   emit("back-to-list");
 };
 
-const ast = ref(null);
+const ast = ref<ParsedMarkdownType | null>(null);
 const parseContent = async () => {
   if (props.report.content) {
     try {
@@ -60,8 +60,8 @@ const navigate = (direction: "prev" | "next") => {
 
 const ODJ_SEPARATOR = "\n\n---ODJ_SEPARATOR---\n\n";
 
-const parsedOdj = ref(null);
-const parsedMainContent = ref(null);
+const parsedOdj = ref<ParsedMarkdownType | null>(null);
+const parsedMainContent = ref<ParsedMarkdownType | null>(null);
 const showSeparator = ref(false);
 
 watch(

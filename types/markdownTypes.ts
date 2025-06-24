@@ -23,3 +23,5 @@ export type Report = {
   createdAt: Date;
   authorId: number;
 };
+
+export type ParsedMarkdownType = Awaited<ReturnType<typeof parseMarkdown>>;

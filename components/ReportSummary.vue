@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
-import type { Report } from "~/types/markdownTypes";
+import type { ParsedMarkdownType, Report } from "~/types/markdownTypes";
 import { parseMarkdown } from "@nuxtjs/mdc/runtime";
 
 const props = defineProps<{
@@ -20,8 +20,7 @@ const odjText = computed(() => {
   return "";
 });
 
-// This will hold the parsed Markdown AST.
-const parsedOdj = ref(null);
+const parsedOdj = ref<ParsedMarkdownType | null>(null);
 
 // This watcher parses the ODJ text when it changes.
 watch(
@@ -45,7 +44,7 @@ watch(
 <template>
   <div class="p-6 pt-0">
     <div class="border-t pt-4">
-      <div v-if="parsedOdj?.body" class="markdown">
+      <div v-if="parsedOdj && parsedOdj.body" class="markdown">
         <h2>Voici les ODJ :</h2>
         <MDCRenderer :body="parsedOdj.body" :data="parsedOdj.data" />
       </div>
