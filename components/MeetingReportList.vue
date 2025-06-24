@@ -62,7 +62,7 @@ const handleEditTitle = (report: Report) => {
           <Card class="group">
             <CardHeader>
               <div class="flex items-center gap-x-2">
-                <CardTitle class="text-xl">{{ report.title }}</CardTitle>
+                <CardTitle class="text-2xl">{{ report.title }}</CardTitle>
                 <Button
                   @click="handleEditTitle(report)"
                   variant="ghost"
@@ -72,31 +72,44 @@ const handleEditTitle = (report: Report) => {
                   <Pencil class="h-4 w-4" />
                 </Button>
               </div>
-              <CardDescription>
-                Rapport #{{ report.id }} - Créé le
-                {{ new Date(report.createdAt).toLocaleDateString() }}
-              </CardDescription>
             </CardHeader>
-            <CardFooter class="flex items-center justify-between">
-              <div class="space-x-2">
-                <Button @click="handleView(report)" variant="outline" size="sm">
-                  <Eye class="w-4 h-4 mr-1" />
-                  Visualiser
-                </Button>
-                <Button @click="handleEdit(report)" variant="outline" size="sm">
-                  <Edit class="w-4 h-4 mr-1" />
-                  Éditer
-                </Button>
+            <CardDescription>
+              <div class="flex items-center justify-between px-6">
+                <div class="flex items-start gap-x-2">
+                  <span>
+                    Rapport #{{ report.id }} - Créé le
+                    {{ new Date(report.createdAt).toLocaleDateString() }}
+                  </span>
+                  <CollapsibleTrigger as-child>
+                    <Button variant="ghost" size="icon" class="w-8 h-8 mb-4">
+                      <ChevronDown
+                        class="h-4 w-4 transition-transform duration-200 data-[state=open]:rotate-180"
+                      />
+                      <span class="sr-only">Toggle summary</span>
+                    </Button>
+                  </CollapsibleTrigger>
+                </div>
+                <div class="flex mb-4">
+                  <Button
+                    @click="handleView(report)"
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Eye class="w-4 h-4 mr-1" />
+                    Visualiser
+                  </Button>
+                  <Button
+                    @click="handleEdit(report)"
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Edit class="w-4 h-4 mr-1" />
+                    Éditer
+                  </Button>
+                </div>
               </div>
-              <CollapsibleTrigger as-child>
-                <Button variant="ghost" size="icon" class="w-8 h-8">
-                  <ChevronDown
-                    class="h-4 w-4 transition-transform duration-200 data-[state=open]:rotate-180"
-                  />
-                  <span class="sr-only">Toggle summary</span>
-                </Button>
-              </CollapsibleTrigger>
-            </CardFooter>
+            </CardDescription>
+            <!-- <CardFooter class="flex items-center justify-between"> -->
 
             <CollapsibleContent>
               <ReportSummary :report="report" />

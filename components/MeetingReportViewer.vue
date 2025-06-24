@@ -160,7 +160,7 @@ watch(
             <h1 class="mb-2 text-base font-semibold text-muted-foreground">
               ODJ :
             </h1>
-            <div class="markdown">
+            <div class="markdown max-h-96 overflow-y-auto">
               <MDCRenderer :body="parsedOdj.body" />
             </div>
           </div>

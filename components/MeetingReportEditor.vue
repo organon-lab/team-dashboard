@@ -36,19 +36,23 @@ watch(
 // This ref prevents the watcher from re-triggering itself in an infinite loop.
 const isFormattingOdj = ref(false);
 
-// This watcher automatically prepends '## ' to each non-empty line in the ODJ.
+// This watcher automatically prepends '### ' to each non-empty line in the ODJ.
 watch(odjContent, (currentValue) => {
-  if (isFormattingOdj.value) {
-    return;
-  }
+  if (isFormattingOdj.value) return;
 
   const lines = currentValue.split("\n");
   let hasMadeChanges = false;
 
   const formattedLines = lines.map((line) => {
+    // If the line is just '### ' or empty, we remove it.
+    if (/^#+\s*$/.test(line)) {
+      hasMadeChanges = true;
+      return "";
+    }
+    // If the line is not empty and does not start with '### ', we prepend '### '.
     if (line.trim().length > 0 && !line.trim().startsWith("### ")) {
       hasMadeChanges = true;
-      return "### " + line;
+      return "### " + line.trim();
     }
     return line;
   });
@@ -56,7 +60,7 @@ watch(odjContent, (currentValue) => {
   if (hasMadeChanges) {
     isFormattingOdj.value = true;
     odjContent.value = formattedLines.join("\n");
-    // nextTick ensures we reset the flag only after the DOM has been updated.
+    // Reset the formatting flag after the next tick to avoid infinite loops.
     nextTick(() => {
       isFormattingOdj.value = false;
     });
@@ -100,14 +104,12 @@ const savePost = async () => {
 
   emit("post-saved");
 };
+
+defineExpose({ savePost });
 </script>
 
 <template>
   <div>
-    <div class="flex items-center justify-between p-2">
-      <h2 class="text-2xl font-bold text-red-400">Meeting Report Editor</h2>
-      <Button @click="savePost" class="m-2">Enregistrer</Button>
-    </div>
     <div class="p-2 space-y-4">
       <div>
         <label

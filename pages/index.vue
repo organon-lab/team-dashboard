@@ -35,6 +35,8 @@ const selectedReport = ref<Report | null>(null);
 const isTitleEditorOpen = ref(false);
 const reportForTitleEdit = ref<Report | null>(null);
 
+const editorRef = ref();
+
 const fetchAllReports = async () => {
   try {
     const data = await $fetch<Report[]>("/api/eventHandler?all=true");
@@ -142,20 +144,24 @@ const handleSaveTitle = async ({
           <template v-if="isEditing">
             <div class="p-4">
               <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold">
+                <h2 class="text-xl font-bold ml-2">
                   {{
                     selectedReport
                       ? `Éditer rapport #${selectedReport.id}`
                       : "Nouveau rapport"
                   }}
                 </h2>
-                <div class="space-x-2">
-                  <Button @click="handleCancelEdit" variant="outline"
+                <div class="flex gap-2 mr-4">
+                  <Button @click="handleCancelEdit" variant="destructive"
                     >Annuler</Button
+                  >
+                  <Button @click="editorRef?.savePost()" variant="default"
+                    >Enregistrer</Button
                   >
                 </div>
               </div>
               <MeetingReportEditor
+                ref="editorRef"
                 :existing-report="selectedReport"
                 @post-saved="handleSaveReport"
               />
