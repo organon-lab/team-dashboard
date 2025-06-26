@@ -17,42 +17,61 @@ const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
   labels: "kind:bug,area:front",
   per_page: 100,
 });
+const { data: reviewCounts } = await useFetch("/api/maintainersCapacity");
 
+const chartData = computed(() =>
+  reviewCounts.value
+    ? Object.entries(reviewCounts.value).map(([maintainer, reviews]) => ({
+        maintainer,
+        reviews,
+      }))
+    : []
+);
+console.log("chartData", chartData);
 const { signOut } = useAuth();
 </script>
 
 <template>
   <div class="h-screen overflow-y-hidden p-2">
     <div class="grid grid-cols-12 min-h-1/6">
-      <h1 class="text-2xl font-bold col-span-4">OSRD frontend dashboard</h1>
+      <div class="col-span-4">
+        <h1 class="text-2xl font-bold">OSRD frontend dashboard</h1>
+        <MaintainersChart
+          :data="chartData"
+          :categories="['reviews']"
+          index="maintainer"
+        />
+      </div>
       <div class="col-span-4">
         <NuxtIsland name="Weather" :props="{ issues }" />
       </div>
       <div class="col-span-4 flex justify-end">
-	<div class="flex flex-col">
-	<Button @click="signOut" class="m-2">
-	  Sign out
-	</Button>
-        <Button
-          @click="
-            colorMode.value = colorMode.value === 'light' ? 'dark' : 'light'
-          "
-          class="m-2 w-fit ml-auto"
-        >
-          <component :is="colorMode.value === 'light' ? Sun : Moon" />
-        </Button>
-	</div>
+        <div class="flex flex-col">
+          <Button @click="signOut" class="m-2"> Sign out </Button>
+          <Button
+            @click="
+              colorMode.value = colorMode.value === 'light' ? 'dark' : 'light'
+            "
+            class="m-2 w-fit ml-auto"
+          >
+            <component :is="colorMode.value === 'light' ? Sun : Moon" />
+          </Button>
+        </div>
       </div>
     </div>
     <Separator />
     <div class="grid grid-cols-12 h-5/6">
-      <div class="col-span-6 overflow-y-auto">
+      <!-- <div class="col-span-6 overflow-y-auto">
         <NuxtIsland name="Issues" :props="{ issues }"> </NuxtIsland>
-      </div>
+      </div> -->
+      <!-- <div class="col-span-6 overflow-y-auto">
+        <NuxtIsland name="Maintainers" :props="{ reviewCounts }" />
+      </div> -->
+
       <Separator orientation="vertical" />
-      <div class="col-span-5">
+      <!-- <div class="col-span-5">
         <NuxtIsland name="Tasks"> </NuxtIsland>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

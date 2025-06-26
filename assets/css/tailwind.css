@@ -3,81 +3,147 @@
 @tailwind utilities;
 
 @layer base {
-	:root {
-		--background: 0 0% 100%;
-		--foreground: 20 14.3% 4.1%;
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 14.3% 4.1%;
+    --card: 60 9.1% 97.8%;
+    --card-foreground: 20 14.3% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14.3% 4.1%;
+    --primary: 24.6 95% 53.1%;
+    --primary-foreground: 60 9.1% 97.8%;
+    --secondary: 60 4.8% 95.9%;
+    --secondary-foreground: 24 9.8% 10%;
+    --muted: 60 4.8% 95.9%;
+    --muted-foreground: 25 5.3% 44.7%;
+    --accent: 60 4.8% 95.9%;
+    --accent-foreground: 24 9.8% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 20 5.9% 90%;
+    --input: 20 5.9% 90%;
+    --ring: 24.6 95% 53.1%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
 
-		--muted: 60 4.8% 95.9%;
-		--muted-foreground: 25 5.3% 44.7%;
+    --vis-tooltip-background-color: none !important;
+    --vis-tooltip-border-color: none !important;
+    --vis-tooltip-text-color: none !important;
+    --vis-tooltip-shadow-color: none !important;
+    --vis-tooltip-backdrop-filter: none !important;
+    --vis-tooltip-padding: none !important;
 
-		--popover: 0 0% 100%;
-		--popover-foreground: 20 14.3% 4.1%;
+    --vis-primary-color: var(--primary);
+    /* change to any hsl value you want */
+    --vis-secondary-color: 160 81% 40%;
+    --vis-text-color: var(--muted-foreground);
+  }
 
-		--card: 0 0% 100%;
-		--card-foreground: 20 14.3% 4.1%;
-
-		--border: 20 5.9% 90%;
-		--input: 20 5.9% 90%;
-
-		--primary: 24 9.8% 10%;
-		--primary-foreground: 60 9.1% 97.8%;
-
-		--secondary: 60 4.8% 95.9%;
-		--secondary-foreground: 24 9.8% 10%;
-
-		--accent: 60 4.8% 95.9%;
-		--accent-foreground: 24 9.8% 10%;
-
-		--destructive: 0 84.2% 60.2%;
-		--destructive-foreground: 60 9.1% 97.8%;
-
-		--ring: 20 14.3% 4.1%;
-
-		--radius: 0.5rem;
-	}
-
-	.dark {
-		--background: 20 14.3% 4.1%;
-		--foreground: 60 9.1% 97.8%;
-
-		--muted: 12 6.5% 15.1%;
-		--muted-foreground: 24 5.4% 63.9%;
-
-		--popover: 20 14.3% 4.1%;
-		--popover-foreground: 60 9.1% 97.8%;
-
-		--card: 20 14.3% 4.1%;
-		--card-foreground: 60 9.1% 97.8%;
-
-		--border: 12 6.5% 15.1%;
-		--input: 12 6.5% 15.1%;
-
-		--primary: 60 9.1% 97.8%;
-		--primary-foreground: 24 9.8% 10%;
-
-		--secondary: 12 6.5% 15.1%;
-		--secondary-foreground: 60 9.1% 97.8%;
-
-		--accent: 12 6.5% 15.1%;
-		--accent-foreground: 60 9.1% 97.8%;
-
-		--destructive: 0 62.8% 30.6%;
-		--destructive-foreground: 60 9.1% 97.8%;
-
-		--ring: 24 5.7% 82.9%;
-	}
+  .dark {
+    --background: 0 0% 9%;
+    --foreground: 240 4.8% 83.9%;
+    --card: 0 0% 14.9%;
+    --card-foreground: 240 4.8% 83.9%;
+    --popover: 240 8% 5.9%;
+    --popover-foreground: 240 4.8% 83.9%;
+    --primary: 0 0% 89.8%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 25.9%;
+    --secondary-foreground: 240 5% 77.8%;
+    --muted: 240 3.7% 25.9%;
+    --muted-foreground: 240 4.8% 68.8%;
+    --accent: 240 3.7% 25.9%;
+    --accent-foreground: 240 4.8% 95.9%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 25.9%;
+    --input: 240 3.7% 25.9%;
+    --ring: 240 5% 77.8%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
 }
 
 @layer base {
-	* {
-		@apply border-border;
-	}
+  * {
+    @apply border-border;
+  }
 
-	body {
-		@apply bg-background text-foreground;
-	}
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 *::-webkit-scrollbar {
-	display: none;
+  display: none;
+}
+
+.markdown {
+  h1 {
+    @apply text-2xl font-bold text-primary mb-4;
+  }
+
+  h2 {
+    @apply text-xl font-semibold text-primary mb-3;
+  }
+
+  h3 {
+    @apply text-lg font-semibold mb-2;
+  }
+
+  h4,
+  h5,
+  h6 {
+    @apply text-base font-semibold mb-1;
+  }
+
+  /* General style for links */
+  a {
+    @apply text-green-400 underline hover:text-green-500;
+  }
+  /* Because of mdc render we need to override the style for links that are INSIDE titles */
+  h1 a,
+  h2 a,
+  h3 a,
+  h4 a,
+  h5 a,
+  h6 a {
+    @apply text-inherit no-underline hover:text-inherit; /* Inherit color and remove underline */
+  }
+
+  li {
+    @apply list-disc list-inside;
+  }
+
+  blockquote {
+    @apply border-l-2 pl-4 italic text-muted-foreground;
+  }
+
+  table {
+    @apply border-collapse text-sm border border-border w-full;
+  }
+
+  th {
+    @apply text-muted-foreground;
+  }
+
+  td {
+    @apply border border-border text-center;
+  }
+
+  tr:nth-child(even) {
+    @apply bg-muted;
+  }
+
+  pre,
+  code {
+    @apply bg-muted rounded p-1;
+  }
 }
