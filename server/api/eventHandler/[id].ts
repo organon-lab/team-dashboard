@@ -28,7 +28,6 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    console.log({ id: post.id, content: post.content });
     return { id: post.id, content: post.content || "" };
   }
 

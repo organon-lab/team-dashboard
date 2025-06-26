@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, defineExpose } from "vue";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -21,10 +21,6 @@ const emit = defineEmits([
 
 const handleBackToList = () => {
   emit("back-to-list");
-};
-
-const handleEditTitle = () => {
-  emit("edit-title", props.report);
 };
 
 const handleEditReport = () => {
@@ -104,63 +100,78 @@ watch(
   },
   { immediate: true }
 );
+
+defineExpose({
+  canNavigate,
+  isFirst,
+  isLast,
+  navigate,
+});
 </script>
 
 <template>
-  <div class="p-4">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-xl font-bold">Visualisation du rapport</h2>
-      <div class="flex items-center space-x-2">
+  <div class="p-2 sm:p-4">
+    <div
+      class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4"
+    >
+      <FloatingFrontIssues />
+
+      <div class="flex flex-col sm:flex-row items-center gap-2 sm:space-x-2">
+        <div class="flex items-center gap-2">
+          <Button
+            v-if="canNavigate"
+            @click="navigate('prev')"
+            :disabled="isFirst"
+            variant="outline"
+            size="icon"
+            class="w-8 h-8"
+          >
+            <ChevronLeft class="w-4 h-4" />
+          </Button>
+          <Button
+            v-if="canNavigate"
+            @click="navigate('next')"
+            :disabled="isLast"
+            variant="outline"
+            size="icon"
+            class="w-8 h-8"
+          >
+            <ChevronRight class="w-4 h-4" />
+          </Button>
+        </div>
         <Button
-          v-if="canNavigate"
-          @click="navigate('prev')"
-          :disabled="isFirst"
+          @click="handleBackToList"
           variant="outline"
-          size="icon"
+          class="w-full sm:w-auto"
         >
-          <ChevronLeft class="w-4 h-4" />
+          Retour à la liste
         </Button>
-        <Button
-          v-if="canNavigate"
-          @click="navigate('next')"
-          :disabled="isLast"
-          variant="outline"
-          size="icon"
-        >
-          <ChevronRight class="w-4 h-4" />
-        </Button>
-        <Button @click="handleBackToList" variant="outline"
-          >Retour à la liste</Button
-        >
       </div>
     </div>
 
     <Card>
       <CardHeader>
         <div class="flex items-center gap-x-2">
-          <CardTitle>{{ report.title }}</CardTitle>
-          <Button
-            @click="handleEditTitle"
-            variant="ghost"
-            size="icon"
-            class="h-5 w-5 shrink-0 opacity-80 hover:opacity-100 transition-opacity"
-            title="Éditer le titre"
-          >
-            <PenLine class="h-4 w-4" />
-          </Button>
+          <CardTitle class="text-lg sm:text-xl break-words">{{
+            report.title
+          }}</CardTitle>
         </div>
-        <p class="text-sm text-muted-foreground">
+        <p class="text-xs sm:text-sm text-muted-foreground">
           Rapport #{{ report.id }} - Créé le
           {{ new Date(report.createdAt).toLocaleDateString() }}
         </p>
       </CardHeader>
       <CardContent>
-        <div class="space-y-6">
+        <div class="space-y-4 sm:space-y-6">
           <div v-if="parsedOdj?.body">
-            <h1 class="mb-2 text-base font-semibold text-muted-foreground">
+            <h1
+              class="mb-2 text-sm sm:text-base font-semibold text-muted-foreground"
+            >
               ODJ :
             </h1>
-            <div class="markdown max-h-96 overflow-y-auto">
+            <div
+              class="markdown max-h-64 sm:max-h-96 overflow-y-auto text-sm sm:text-base"
+            >
               <MDCRenderer :body="parsedOdj.body" />
             </div>
           </div>
@@ -168,28 +179,32 @@ watch(
           <Separator v-if="showSeparator" />
 
           <div v-if="parsedMainContent?.body">
-            <div class="flex items-center justify-between mb-2">
-              <h1 class="text-base font-semibold text-muted-foreground">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2"
+            >
+              <h1
+                class="text-sm sm:text-base font-semibold text-muted-foreground"
+              >
                 Compte-rendu :
               </h1>
               <Button
                 @click="handleEditReport"
                 variant="ghost"
                 size="icon"
-                class="h-5 w-5 shrink-0 opacity-80 hover:opacity-100 transition-opacity"
+                class="h-8 w-8 shrink-0 opacity-80 hover:opacity-100 transition-opacity self-end sm:self-auto"
                 title="Éditer le compte-rendu"
               >
                 <Pencil class="h-4 w-4" />
               </Button>
             </div>
-            <div class="markdown">
+            <div class="markdown text-sm sm:text-base">
               <MDCRenderer :body="parsedMainContent.body" />
             </div>
           </div>
 
           <p
             v-if="!parsedOdj && !parsedMainContent"
-            class="text-muted-foreground italic"
+            class="text-muted-foreground italic text-sm sm:text-base"
           >
             Aucun contenu disponible.
           </p>

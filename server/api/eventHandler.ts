@@ -15,7 +15,6 @@ export default defineEventHandler(async (event) => {
     }
 
     const lastPost = await prisma.post.findFirst({ orderBy: { id: "desc" } });
-    console.log({ id: lastPost?.id, content: lastPost?.content });
     return { content: lastPost?.content || "" };
   }
 

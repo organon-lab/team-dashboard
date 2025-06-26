@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { Plus, X } from "lucide-vue-next";
+import { ListTodo, Plus, X } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,47 +29,59 @@ const handleRemoveIssue = (idx: number) => {
 </script>
 
 <template>
-  <div class="fixed bottom-6 right-6 z-50">
+  <div>
     <Button
-      class="rounded-full w-14 h-14 shadow-lg bg-primary text-primary-foreground hover:bg-primary/90"
+      class="rounded-full w-14 h-14 shadow-lg bg-orange-500 text-white hover:bg-orange-600"
       @click="showList = !showList"
       size="icon"
     >
-      <Plus class="w-8 h-8" />
+      <ListTodo class="w-8 h-8" />
     </Button>
   </div>
 
   <div
     v-if="showList"
-    class="fixed bottom-28 right-6 z-50 w-80 bg-card border border-border rounded-xl shadow-xl p-4 flex flex-col gap-2 animate-fade-in"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
   >
-    <div class="flex items-center justify-between mb-2">
-      <span class="font-semibold text-lg">Sujet front en suspens</span>
-      <Button variant="ghost" size="icon" @click="showList = false">
-        <X class="w-5 h-5" />
+    <div
+      class="w-[600px] bg-stone-900 border border-border rounded-xl shadow-xl p-4 flex flex-col gap-2 animate-fade-in"
+    >
+      <div class="flex items-center justify-between mb-2">
+        <span class="font-semibold text-lg mx-auto"
+          >Sujet front en suspens</span
+        >
+        <Button variant="ghost" size="icon" @click="showList = false">
+          <X class="w-5 h-5" />
+        </Button>
+      </div>
+      <ul class="flex flex-col gap-2 max-h-60 overflow-y-auto">
+        <li
+          v-for="(issue, idx) in issues"
+          :key="idx"
+          class="flex items-center justify-between bg-stone-800 rounded px-2 py-1"
+        >
+          <span class="truncate cursor-default" :title="issue">{{
+            issue
+          }}</span>
+          <Button variant="ghost" size="icon" @click="handleRemoveIssue(idx)">
+            <X class="w-4 h-4" />
+          </Button>
+        </li>
+        <li
+          v-if="issues.length === 0"
+          class="text-muted-foreground italic text-sm text-center text-stone-800 py-4"
+        >
+          Aucun sujet en suspens
+        </li>
+      </ul>
+      <Button
+        class="mt-2 bg-stone-800 py-1 text-sm w-56 mx-auto"
+        variant="outline"
+        @click="showAddDialog = true"
+      >
+        <Plus class="w-4 h-4 mr-1" /> Ajouter un sujet
       </Button>
     </div>
-    <ul class="flex flex-col gap-2 max-h-60 overflow-y-auto">
-      <li
-        v-for="(issue, idx) in issues"
-        :key="idx"
-        class="flex items-center justify-between bg-muted rounded px-2 py-1"
-      >
-        <span class="truncate">{{ issue }}</span>
-        <Button variant="ghost" size="icon" @click="handleRemoveIssue(idx)">
-          <X class="w-4 h-4" />
-        </Button>
-      </li>
-      <li
-        v-if="issues.length === 0"
-        class="text-muted-foreground italic text-sm text-center py-4"
-      >
-        Aucun sujet en suspens
-      </li>
-    </ul>
-    <Button class="mt-2 w-full" variant="outline" @click="showAddDialog = true">
-      <Plus class="&mr-1" /> Ajouter un sujet
-    </Button>
   </div>
 
   <Dialog :open="showAddDialog" @update:open="showAddDialog = $event">

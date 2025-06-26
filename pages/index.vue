@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { Sun, Moon } from "lucide-vue-next";
+import { Sun, Moon, ThermometerSun, LogOut } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { NuxtIsland } from "#components";
@@ -8,7 +8,6 @@ import { Octokit } from "octokit";
 import MeetingReportList from "@/components/MeetingReportList.vue";
 import MeetingReportEditor from "@/components/MeetingReportEditor.vue";
 import MeetingReportViewer from "@/components/MeetingReportViewer.vue";
-import TitleEditDialog from "@/components/TitleEditDialog.vue";
 import type { Report } from "~/types/markdownTypes";
 
 const colorMode = useColorMode();
@@ -30,10 +29,6 @@ const reports = ref<Report[]>([]);
 const isEditing = ref(false);
 const isViewing = ref(false);
 const selectedReport = ref<Report | null>(null);
-
-// State for the title editing modal
-const isTitleEditorOpen = ref(false);
-const reportForTitleEdit = ref<Report | null>(null);
 
 const editorRef = ref();
 
@@ -88,118 +83,78 @@ const handleBackToList = () => {
   isViewing.value = false;
   selectedReport.value = null;
 };
-
-const handleOpenTitleEditor = (report: Report) => {
-  reportForTitleEdit.value = report;
-  isTitleEditorOpen.value = true;
-};
-
-const handleSaveTitle = async ({
-  id,
-  newTitle,
-}: {
-  id: number;
-  newTitle: string;
-}) => {
-  try {
-    await $fetch(`/api/eventHandler/${id}`, {
-      method: "PUT",
-      body: { title: newTitle },
-    });
-    // Close the dialog and refresh the list
-    isTitleEditorOpen.value = false;
-    await fetchAllReports();
-  } catch (error) {
-    console.error("Failed to save title:", error);
-  }
-};
 </script>
 
 <template>
-  <div class="h-screen overflow-y-hidden p-2">
-    <div class="grid grid-cols-12" style="height: 12rem">
-      <h1 class="text-2xl font-bold col-span-3">OSRD frontend dashboard</h1>
-      <div class="col-span-6">
-        <NuxtIsland name="Weather" :props="{ issues }" />
+  <div class="min-h-screen flex flex-col bg-background">
+    <div class="h-screen overflow-y-hidden p-2">
+      <div class="grid grid-cols-12" style="height: 12rem">
+        <div class="col-span-3 flex items-start">
+          <div class="flex items-center gap-2 pl-2">
+            <Thermometer-sun class="w-10 h-10 text-orange-500" />
+            <h1 class="text-xl font-bold tracking-wide uppercase text-white">
+              OSRD Frontend Dashboard
+            </h1>
+          </div>
+        </div>
+
+        <div class="col-span-6">
+          <NuxtIsland name="Weather" :props="{ issues }" />
+        </div>
+        <div class="col-span-3 flex justify-end">
+          <div class="flex flex-col">
+            <Button @click="signOut" class="m-2"> <LogOut /> </Button>
+            <Button
+              @click="
+                colorMode.value = colorMode.value === 'light' ? 'dark' : 'light'
+              "
+              class="m-2 w-fit ml-auto"
+            >
+              <component :is="colorMode.value === 'light' ? Sun : Moon" />
+            </Button>
+          </div>
+        </div>
       </div>
-      <div class="col-span-3 flex justify-end">
-        <div class="flex flex-col">
-          <Button @click="signOut" class="m-2"> Sign out </Button>
-          <Button
-            @click="
-              colorMode.value = colorMode.value === 'light' ? 'dark' : 'light'
-            "
-            class="m-2 w-fit ml-auto"
-          >
-            <component :is="colorMode.value === 'light' ? Sun : Moon" />
-          </Button>
+      <Separator />
+      <div class="grid grid-cols-12" style="height: calc(100vh - 12rem)">
+        <!-- Left section : Tasks or markdown editor -->
+        <div class="col-span-6 overflow-y-auto">
+          <ClientOnly>
+            <template v-if="isEditing">
+              <div class="p-4">
+                <MeetingReportEditor
+                  ref="editorRef"
+                  :existing-report="selectedReport"
+                  @post-saved="handleSaveReport"
+                  @close="handleCancelEdit"
+                />
+              </div>
+            </template>
+            <template v-else>
+              <NuxtIsland name="Issues" :props="{ issues }" />
+            </template>
+          </ClientOnly>
+        </div>
+        <!-- Right section : Meeting report list or viewer -->
+        <div class="col-span-6 overflow-y-auto">
+          <MeetingReportViewer
+            v-if="isViewing && selectedReport"
+            :report="selectedReport"
+            :reports-list="reports"
+            @back-to-list="handleBackToList"
+            @navigate="handleNavigate"
+            @edit-report="handleEditReport"
+          />
+          <MeetingReportList
+            v-else
+            :reports="reports"
+            @edit-report="handleEditReport"
+            @view-report="handleViewReport"
+            @create-new-report="handleCreateNewReport"
+            class="flex-grow"
+          />
         </div>
       </div>
     </div>
-    <Separator />
-    <div class="grid grid-cols-12" style="height: calc(100vh - 12rem)">
-      <!-- Left section : Tasks or markdown editor -->
-      <div class="col-span-6 overflow-y-auto">
-        <ClientOnly>
-          <template v-if="isEditing">
-            <div class="p-4">
-              <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold ml-2">
-                  {{
-                    selectedReport
-                      ? `Éditer rapport #${selectedReport.id}`
-                      : "Nouveau rapport"
-                  }}
-                </h2>
-                <div class="flex gap-2 mr-4">
-                  <Button @click="handleCancelEdit" variant="destructive"
-                    >Annuler</Button
-                  >
-                  <Button @click="editorRef?.savePost()" variant="default"
-                    >Enregistrer</Button
-                  >
-                </div>
-              </div>
-              <MeetingReportEditor
-                ref="editorRef"
-                :existing-report="selectedReport"
-                @post-saved="handleSaveReport"
-              />
-            </div>
-          </template>
-          <template v-else>
-            <NuxtIsland name="Issues" :props="{ issues }" />
-          </template>
-        </ClientOnly>
-      </div>
-      <!-- Right section : Meeting report list or viewer -->
-      <div class="col-span-6 overflow-y-auto">
-        <MeetingReportViewer
-          v-if="isViewing && selectedReport"
-          :report="selectedReport"
-          :reports-list="reports"
-          @back-to-list="handleBackToList"
-          @navigate="handleNavigate"
-          @edit-title="handleOpenTitleEditor"
-          @edit-report="handleEditReport"
-        />
-        <MeetingReportList
-          v-else
-          :reports="reports"
-          @edit-report="handleEditReport"
-          @view-report="handleViewReport"
-          @create-new-report="handleCreateNewReport"
-          @edit-title="handleEditReport"
-        />
-      </div>
-    </div>
-
-    <TitleEditDialog
-      :open="isTitleEditorOpen"
-      :report="reportForTitleEdit"
-      @update:open="isTitleEditorOpen = $event"
-      @save-title="handleSaveTitle"
-    />
   </div>
-  <FloatingFrontIssues />
 </template>

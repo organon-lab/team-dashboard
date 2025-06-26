@@ -2,16 +2,18 @@
 import { ref, watch, nextTick } from "vue";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import type { Report } from "~/types/markdownTypes";
 
 const props = defineProps<{
   existingReport?: Report | null;
 }>();
 
-const emit = defineEmits(["post-saved"]);
+const emit = defineEmits(["post-saved", "close"]);
 
 const odjContent = ref("");
 const mainContent = ref("");
+const localTitle = ref(props.existingReport?.title || "");
 // The ODJ_SEPARATOR is used to split the content into two parts.
 const ODJ_SEPARATOR = "\n\n---ODJ_SEPARATOR---\n\n";
 
@@ -29,6 +31,7 @@ watch(
       odjContent.value = "";
       mainContent.value = fullContent;
     }
+    localTitle.value = newReport?.title || "";
   },
   { immediate: true, deep: true }
 );
@@ -78,7 +81,7 @@ const getFormattedDate = () => {
 
 const savePost = async () => {
   const titleForSave =
-    props.existingReport?.title || `point front du ${getFormattedDate()}`;
+    localTitle.value || `point front du ${getFormattedDate()}`;
 
   // Combine the two text areas into a single string before sending.
   const fullContentToSave = `${odjContent.value}${ODJ_SEPARATOR}${mainContent.value}`;
@@ -92,7 +95,10 @@ const savePost = async () => {
   if (props.existingReport?.id) {
     await $fetch(`/api/eventHandler/${props.existingReport.id}`, {
       method: "PUT",
-      body: { content: fullContentToSave },
+      body: {
+        title: titleForSave,
+        content: fullContentToSave,
+      },
     });
   } else {
     // When creating, we send the whole object.
@@ -109,8 +115,14 @@ defineExpose({ savePost });
 </script>
 
 <template>
-  <div>
+  <form @submit.prevent="savePost">
     <div class="p-2 space-y-4">
+      <Input
+        v-model="localTitle"
+        class="w-full text-lg font-semibold"
+        placeholder="Titre du rapport"
+        required
+      />
       <div>
         <label
           for="report-odj"
@@ -135,8 +147,15 @@ defineExpose({ savePost });
           v-model="mainContent"
           placeholder="Déroulé de la réunion..."
           class="min-h-[300px]"
+          required
         />
       </div>
     </div>
-  </div>
+    <div class="flex justify-end gap-2 mt-4">
+      <Button type="button" variant="destructive" @click="$emit('close')"
+        >Annuler</Button
+      >
+      <Button type="submit">Enregistrer</Button>
+    </div>
+  </form>
 </template>

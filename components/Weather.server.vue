@@ -27,7 +27,6 @@ const { issues } = defineProps({
 
 <template>
   <div class="flex flex-col items-center p-4">
-    <h1 class="text-2xl font-bold text-center">WEATHER</h1>
     <component
       :is="
         (issues.length < 20 && Sun) ||
