@@ -50,4 +50,9 @@ export default defineNuxtConfig({
   experimental: {
     componentIslands: true,
   },
+  app: {
+    head: {
+      title: "OSRD-team-dashboard",
+    },
+  },
 });
