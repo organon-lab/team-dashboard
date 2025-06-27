@@ -76,7 +76,9 @@ watch(reportsPerPage, () => {
       <h2 class="text-xl sm:text-2xl font-bold text-center sm:text-left">
         Comptes rendus de points front
       </h2>
-      <Button @click="handleCreateNew" class="w-full sm:w-auto"
+      <Button
+        @click="handleCreateNew"
+        class="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 dark:text-white"
         >Nouveau rapport</Button
       >
     </div>

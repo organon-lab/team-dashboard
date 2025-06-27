@@ -9,6 +9,7 @@ import {
   CircleAlert,
   OctagonAlert,
   CircleHelp,
+  User,
 } from "lucide-vue-next";
 
 const { issues } = defineProps({
@@ -40,14 +41,12 @@ const { issues } = defineProps({
         '#f56565'
       "
     />
-    <p class="text-center">
+    <p class="text-center text-sm font-light my-2">
       There are currently {{ issues.length }} frontend bugs in the OSRD
       repository.
     </p>
     <div class="flex items-center space-x-1 rounded-full bg-secondary p-1 mt-2">
-      <Badge
-        class="h-7 border-transparent bg-red-700/80 px-3 text-sm text-white hover:bg-red-700"
-      >
+      <Badge class="h-7 border-transparent !bg-red-700 px-3 text-sm text-white">
         <TriangleAlert :size="14" class="mr-1.5" />
         critical:
         {{
@@ -57,7 +56,7 @@ const { issues } = defineProps({
         }}
       </Badge>
       <Badge
-        class="h-7 border-transparent bg-orange-600/80 px-3 text-sm text-white hover:bg-orange-600"
+        class="h-7 border-transparent !bg-orange-600 px-3 text-sm text-white"
       >
         <OctagonAlert :size="14" class="mr-1.5" />
         major:
@@ -68,7 +67,7 @@ const { issues } = defineProps({
         }}
       </Badge>
       <Badge
-        class="h-7 border-transparent bg-yellow-500/80 px-3 text-sm text-gray-900 hover:bg-yellow-500"
+        class="h-7 border-transparent !bg-yellow-500 px-3 text-sm text-gray-900"
       >
         <CircleAlert :size="14" class="mr-1.5" />
         minor:
@@ -78,13 +77,24 @@ const { issues } = defineProps({
           ).length
         }}
       </Badge>
-      <Badge variant="outline" class="h-7 px-3 text-sm">
+      <Badge class="!bg-gray-600 h-7 px-3 text-sm text-white">
         <CircleHelp :size="14" class="mr-1.5" />
         untagged:
         {{
           issues.filter(
             (issue) =>
               !issue.labels.some((label) => label.name.startsWith("severity:"))
+          ).length
+        }}
+      </Badge>
+      <Badge
+        class="h-7 border-transparent !bg-green-600 px-3 text-sm text-white"
+      >
+        <User :size="14" class="mr-1.5" />
+        from users:
+        {{
+          issues.filter((issue) =>
+            issue.labels.some((label) => label.name.includes("from users"))
           ).length
         }}
       </Badge>

@@ -92,7 +92,7 @@ const handleBackToList = () => {
         <div class="col-span-3 flex items-start">
           <div class="flex items-center gap-2 pl-2">
             <Thermometer-sun class="w-10 h-10 text-orange-500" />
-            <h1 class="text-xl font-bold tracking-wide uppercase text-white">
+            <h1 class="text-xl font-bold tracking-wide uppercase">
               OSRD Frontend Dashboard
             </h1>
           </div>

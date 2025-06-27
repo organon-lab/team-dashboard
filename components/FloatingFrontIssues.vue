@@ -31,7 +31,7 @@ const handleRemoveIssue = (idx: number) => {
 <template>
   <div>
     <Button
-      class="rounded-full w-14 h-14 shadow-lg bg-orange-500 text-white hover:bg-orange-600"
+      class="rounded-full w-14 h-14 shadow-lg bg-orange-500 hover:bg-orange-600 dark:text-white"
       @click="showList = !showList"
       size="icon"
     >
@@ -44,7 +44,7 @@ const handleRemoveIssue = (idx: number) => {
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
   >
     <div
-      class="w-[600px] bg-stone-900 border border-border rounded-xl shadow-xl p-4 flex flex-col gap-2 animate-fade-in"
+      class="w-[600px] border border-border rounded-xl shadow-xl p-4 flex flex-col gap-2 animate-fade-in bg-background"
     >
       <div class="flex items-center justify-between mb-2">
         <span class="font-semibold text-lg mx-auto"
@@ -58,7 +58,7 @@ const handleRemoveIssue = (idx: number) => {
         <li
           v-for="(issue, idx) in issues"
           :key="idx"
-          class="flex items-center justify-between bg-stone-800 rounded px-2 py-1"
+          class="flex items-center justify-between rounded px-2 py-1"
         >
           <span class="truncate cursor-default" :title="issue">{{
             issue
@@ -69,13 +69,13 @@ const handleRemoveIssue = (idx: number) => {
         </li>
         <li
           v-if="issues.length === 0"
-          class="text-muted-foreground italic text-sm text-center text-stone-800 py-4"
+          class="text-muted-foreground italic text-sm text-center py-4"
         >
           Aucun sujet en suspens
         </li>
       </ul>
       <Button
-        class="mt-2 bg-stone-800 py-1 text-sm w-56 mx-auto"
+        class="mt-2 py-1 text-sm w-56 mx-auto"
         variant="outline"
         @click="showAddDialog = true"
       >
