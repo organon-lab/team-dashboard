@@ -31,14 +31,14 @@ const chartData = computed(() =>
         maintainer,
         reviews,
       }))
-    : []
+    : [],
 );
 
 const issues = rawIssues.map((issue: any) => ({
   number: issue.number,
   title: issue.title,
   labels: (issue.labels || []).map((label: any) =>
-    typeof label === "string" ? { name: label } : { name: label.name }
+    typeof label === "string" ? { name: label } : { name: label.name },
   ),
   created_at: issue.created_at,
   html_url: issue.html_url,
@@ -110,8 +110,8 @@ const handleBackToList = () => {
   <!-- TODO : fix composants client et serveur -->
   <div class="min-h-screen flex flex-col bg-background">
     <div class="h-screen overflow-y-hidden p-2">
-      <div class="grid grid-cols-12" style="height: 12rem">
-        <div class="col-span-3 flex items-start">
+      <div class="flex" style="height: 12rem">
+        <div class="side-header-section items-start">
           <div class="flex-col items-center gap-2 pl-2">
             <div class="flex">
               <Thermometer-sun class="w-10 h-10 text-orange-500" />
@@ -119,20 +119,24 @@ const handleBackToList = () => {
                 OSRD Frontend Dashboard
               </h1>
             </div>
-            <MaintainersChart
-              :data="chartData"
-              :categories="['reviews']"
-              index="maintainer"
-            />
+            <div class="self-center">
+              <MaintainersChart
+                :data="chartData"
+                :categories="['reviews']"
+                index="maintainer"
+              />
+            </div>
           </div>
         </div>
 
-        <div class="col-span-6">
+        <div class="mid-header-section">
           <Weather :issues="issues" />
         </div>
-        <div class="col-span-3 flex justify-end">
+        <div class="side-header-section flex justify-end">
           <div class="flex flex-col">
-            <Button @click="signOut" class="m-2"> <LogOut /> </Button>
+            <Button @click="signOut" class="m-2">
+              <LogOut />
+            </Button>
             <Button
               @click="
                 colorMode.value = colorMode.value === 'light' ? 'dark' : 'light'
@@ -157,7 +161,7 @@ const handleBackToList = () => {
                 @close="handleCancelEdit"
               />
             </div>
-            <div v-else>
+            <div v-else class="h-full">
               <Issues :issues="issues" />
             </div>
           </ClientOnly>
@@ -185,3 +189,13 @@ const handleBackToList = () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.side-header-section {
+  width: 30%;
+}
+
+.mid-header-section {
+  width: 40%;
+}
+</style>

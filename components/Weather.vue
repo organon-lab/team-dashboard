@@ -31,34 +31,34 @@ const { issues } = defineProps({
     <component
       :is="
         issues.some((issue) =>
-          issue.labels.some((label) => label.name.includes('critical'))
+          issue.labels.some((label) => label.name.includes('critical')),
         )
           ? CloudLightning
           : issues.some((issue) =>
-              issue.labels.some((label) => label.name.includes('major'))
-            )
-          ? CloudSunRain
-          : issues.some((issue) =>
-              issue.labels.some((label) => label.name.includes('minor'))
-            )
-          ? Sun
-          : Sun
+                issue.labels.some((label) => label.name.includes('major')),
+              )
+            ? CloudSunRain
+            : issues.some((issue) =>
+                  issue.labels.some((label) => label.name.includes('minor')),
+                )
+              ? Sun
+              : Sun
       "
       :size="64"
       :color="
         issues.some((issue) =>
-          issue.labels.some((label) => label.name.includes('critical'))
+          issue.labels.some((label) => label.name.includes('critical')),
         )
           ? '#f56565'
           : issues.some((issue) =>
-              issue.labels.some((label) => label.name.includes('major'))
-            )
-          ? '#f6ad55'
-          : issues.some((issue) =>
-              issue.labels.some((label) => label.name.includes('minor'))
-            )
-          ? '#f6e00e'
-          : '#f6e00e'
+                issue.labels.some((label) => label.name.includes('major')),
+              )
+            ? '#f6ad55'
+            : issues.some((issue) =>
+                  issue.labels.some((label) => label.name.includes('minor')),
+                )
+              ? '#f6e00e'
+              : '#f6e00e'
       "
     />
     <p class="text-center text-sm font-light my-2">
@@ -72,7 +72,7 @@ const { issues } = defineProps({
         critical:
         {{
           issues.filter((issue) =>
-            issue.labels.some((label) => label.name.includes("critical"))
+            issue.labels.some((label) => label.name.includes("critical")),
           ).length
         }}
       </Badge>
@@ -83,7 +83,7 @@ const { issues } = defineProps({
         major:
         {{
           issues.filter((issue) =>
-            issue.labels.some((label) => label.name.includes("major"))
+            issue.labels.some((label) => label.name.includes("major")),
           ).length
         }}
       </Badge>
@@ -94,7 +94,7 @@ const { issues } = defineProps({
         minor:
         {{
           issues.filter((issue) =>
-            issue.labels.some((label) => label.name.includes("minor"))
+            issue.labels.some((label) => label.name.includes("minor")),
           ).length
         }}
       </Badge>
@@ -104,7 +104,7 @@ const { issues } = defineProps({
         {{
           issues.filter(
             (issue) =>
-              !issue.labels.some((label) => label.name.startsWith("severity:"))
+              !issue.labels.some((label) => label.name.startsWith("severity:")),
           ).length
         }}
       </Badge>
@@ -112,10 +112,10 @@ const { issues } = defineProps({
         class="h-7 border-transparent !bg-green-600 px-3 text-sm text-white select-none"
       >
         <User :size="14" class="mr-1.5" />
-        from users:
+        users:
         {{
           issues.filter((issue) =>
-            issue.labels.some((label) => label.name.includes("from:users"))
+            issue.labels.some((label) => label.name.includes("from:users")),
           ).length
         }}
       </Badge>

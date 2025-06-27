@@ -16,6 +16,13 @@ const props = defineProps<{
       :categories="props.categories"
       :index="props.index"
       :rounded-corners="4"
+      :margin="{
+        top: 10,
+        right: 10,
+        bottom: 10,
+        left: 10,
+      }"
+      :show-x-axis="false"
     />
   </div>
 </template>

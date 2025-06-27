@@ -20,10 +20,6 @@ export default defineEventHandler(async () => {
     FRONT_MAINTAINERS.map((maintainer) => [maintainer, 0])
   );
 
-  const isInvolvedReviewCounts: Record<string, number> = Object.fromEntries(
-    FRONT_MAINTAINERS.map((maintainer) => [maintainer, 0])
-  );
-
   const iterator = octokit.paginate.iterator(octokit.rest.pulls.list, {
     owner,
     repo,
@@ -33,7 +29,6 @@ export default defineEventHandler(async () => {
 
   for await (const { data: prs } of iterator) {
     for (const pr of prs) {
-      console.log(pr, "pr");
       const reviewers =
         pr.requested_reviewers?.map((r: { login: string }) => r.login) ?? [];
       for (const reviewer of reviewers) {
@@ -43,6 +38,5 @@ export default defineEventHandler(async () => {
       }
     }
   }
-  console.log("Review counts:", requestedReviewCounts);
   return requestedReviewCounts;
 });

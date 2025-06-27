@@ -38,15 +38,15 @@ const sortedIssues = issues.sort((a, b) => {
 </script>
 
 <template>
-  <div class="w-full flex flex-col">
+  <div class="h-full w-full flex flex-col">
     <div
-      class="flex-1 rounded-xl border border-border bg-card shadow-md overflow-y-auto"
+      class="flex-1 border border-border bg-card shadow-md overflow-y-auto"
     >
       <table
         class="min-w-full w-full table-fixed text-sm text-left text-foreground"
       >
         <thead
-          class="sticky top-0 z-10 bg-neutral-900/95 backdrop-blur border-b border-border light:text-red text-blue"
+          class="sticky top-0 z-10 backdrop-blur border-b border-border"
         >
           <tr>
             <th
