@@ -23,6 +23,16 @@ const rawIssues = await octokit.paginate(octokit.rest.issues.listForRepo, {
   labels: "kind:bug,area:front",
   per_page: 100,
 });
+const { data: reviewCounts } = await useFetch("/api/maintainersCapacity");
+
+const chartData = computed(() =>
+  reviewCounts.value
+    ? Object.entries(reviewCounts.value).map(([maintainer, reviews]) => ({
+        maintainer,
+        reviews,
+      }))
+    : []
+);
 
 const issues = rawIssues.map((issue: any) => ({
   number: issue.number,
@@ -96,17 +106,24 @@ const handleBackToList = () => {
 };
 </script>
 
-// TODO : fix composants client et serveur
 <template>
+  <!-- TODO : fix composants client et serveur -->
   <div class="min-h-screen flex flex-col bg-background">
     <div class="h-screen overflow-y-hidden p-2">
       <div class="grid grid-cols-12" style="height: 12rem">
         <div class="col-span-3 flex items-start">
-          <div class="flex items-center gap-2 pl-2">
-            <Thermometer-sun class="w-10 h-10 text-orange-500" />
-            <h1 class="text-xl font-bold tracking-wide uppercase">
-              OSRD Frontend Dashboard
-            </h1>
+          <div class="flex-col items-center gap-2 pl-2">
+            <div class="flex">
+              <Thermometer-sun class="w-10 h-10 text-orange-500" />
+              <h1 class="text-xl font-bold tracking-wide uppercase">
+                OSRD Frontend Dashboard
+              </h1>
+            </div>
+            <MaintainersChart
+              :data="chartData"
+              :categories="['reviews']"
+              index="maintainer"
+            />
           </div>
         </div>
 
