@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "nuxt-auth-utils",
     "@sidebase/nuxt-auth",
+    "@nuxtjs/mdc",
   ],
   auth: {
     provider: {
