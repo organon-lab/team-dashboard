@@ -17,7 +17,7 @@ export default defineNuxtConfig({
       defaultProvider: "github",
       addDefaultCallbackUrl: true,
     },
-    globalAppMiddleware: false,
+    globalAppMiddleware: true,
   },
   shadcn: {
     /**

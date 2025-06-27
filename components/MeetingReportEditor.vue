@@ -17,6 +17,9 @@ const localTitle = ref(props.existingReport?.title || "");
 // The ODJ_SEPARATOR is used to split the content into two parts.
 const ODJ_SEPARATOR = "\n\n---ODJ_SEPARATOR---\n\n";
 
+const reportTitleRef = ref<HTMLInputElement | null>(null);
+const reportBodyRef = ref<HTMLTextAreaElement | null>(null);
+
 // This watcher will split the incoming content from the DB into the two text areas.
 watch(
   () => props.existingReport,
@@ -32,6 +35,13 @@ watch(
       mainContent.value = fullContent;
     }
     localTitle.value = newReport?.title || "";
+    nextTick(() => {
+      if (!newReport) {
+        reportTitleRef.value?.focus();
+      } else {
+        reportBodyRef.value?.focus();
+      }
+    });
   },
   { immediate: true, deep: true }
 );
@@ -118,6 +128,7 @@ defineExpose({ savePost });
   <form @submit.prevent="savePost">
     <div class="p-2 space-y-4">
       <Input
+        ref="reportTitleRef"
         v-model="localTitle"
         class="w-full text-lg font-semibold"
         placeholder="Titre du rapport"
@@ -134,6 +145,7 @@ defineExpose({ savePost });
           v-model="odjContent"
           placeholder="Points à aborder..."
           class="min-h-[100px]"
+          required
         />
       </div>
       <div>
@@ -143,11 +155,11 @@ defineExpose({ savePost });
           >Contenu du rapport (CR)</label
         >
         <Textarea
+          ref="reportBodyRef"
           id="report-content"
           v-model="mainContent"
           placeholder="Déroulé de la réunion..."
           class="min-h-[300px]"
-          required
         />
       </div>
     </div>

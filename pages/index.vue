@@ -8,6 +8,7 @@ import { Octokit } from "octokit";
 import MeetingReportList from "@/components/MeetingReportList.vue";
 import MeetingReportEditor from "@/components/MeetingReportEditor.vue";
 import MeetingReportViewer from "@/components/MeetingReportViewer.vue";
+import Issues from "~/components/Issues.vue";
 import type { Report } from "~/types/markdownTypes";
 
 const colorMode = useColorMode();
@@ -16,12 +17,22 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
+const rawIssues = await octokit.paginate(octokit.rest.issues.listForRepo, {
   owner: "OpenRailAssociation",
   repo: "osrd",
   labels: "kind:bug,area:front",
   per_page: 100,
 });
+
+const issues = rawIssues.map((issue: any) => ({
+  number: issue.number,
+  title: issue.title,
+  labels: (issue.labels || []).map((label: any) =>
+    typeof label === "string" ? { name: label } : { name: label.name }
+  ),
+  created_at: issue.created_at,
+  html_url: issue.html_url,
+}));
 
 const { signOut } = useAuth();
 
@@ -85,6 +96,7 @@ const handleBackToList = () => {
 };
 </script>
 
+// TODO : fix composants client et serveur
 <template>
   <div class="min-h-screen flex flex-col bg-background">
     <div class="h-screen overflow-y-hidden p-2">
@@ -99,7 +111,7 @@ const handleBackToList = () => {
         </div>
 
         <div class="col-span-6">
-          <NuxtIsland name="Weather" :props="{ issues }" />
+          <Weather :issues="issues" />
         </div>
         <div class="col-span-3 flex justify-end">
           <div class="flex flex-col">
@@ -120,19 +132,17 @@ const handleBackToList = () => {
         <!-- Left section : Tasks or markdown editor -->
         <div class="col-span-6 overflow-y-auto">
           <ClientOnly>
-            <template v-if="isEditing">
-              <div class="p-4">
-                <MeetingReportEditor
-                  ref="editorRef"
-                  :existing-report="selectedReport"
-                  @post-saved="handleSaveReport"
-                  @close="handleCancelEdit"
-                />
-              </div>
-            </template>
-            <template v-else>
-              <NuxtIsland name="Issues" :props="{ issues }" />
-            </template>
+            <div v-if="isEditing" class="p-4">
+              <MeetingReportEditor
+                ref="editorRef"
+                :existing-report="selectedReport"
+                @post-saved="handleSaveReport"
+                @close="handleCancelEdit"
+              />
+            </div>
+            <div v-else>
+              <Issues :issues="issues" />
+            </div>
           </ClientOnly>
         </div>
         <!-- Right section : Meeting report list or viewer -->

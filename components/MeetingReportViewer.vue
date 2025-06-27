@@ -73,6 +73,9 @@ const parsedOdj = ref<ParsedMarkdownType | null>(null);
 const parsedMainContent = ref<ParsedMarkdownType | null>(null);
 const showSeparator = ref(false);
 
+const forceLineBreaks = (str: string) =>
+  str.replace(/([^\n])\n(?!\n)/g, "$1  \n");
+
 watch(
   () => props.report.content,
   async (fullContent) => {
@@ -86,16 +89,20 @@ watch(
       const [odjPart, mainPart] = fullContent.split(ODJ_SEPARATOR);
 
       if (odjPart && odjPart.trim()) {
-        parsedOdj.value = await parseMarkdown(odjPart);
+        parsedOdj.value = await parseMarkdown(forceLineBreaks(odjPart));
       }
       if (mainPart && mainPart.trim()) {
-        parsedMainContent.value = await parseMarkdown(mainPart);
+        parsedMainContent.value = await parseMarkdown(
+          forceLineBreaks(mainPart)
+        );
       }
       if (parsedOdj.value?.body && parsedMainContent.value?.body) {
         showSeparator.value = true;
       }
     } else {
-      parsedMainContent.value = await parseMarkdown(fullContent);
+      parsedMainContent.value = await parseMarkdown(
+        forceLineBreaks(fullContent)
+      );
     }
   },
   { immediate: true }

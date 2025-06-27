@@ -30,23 +30,44 @@ const { issues } = defineProps({
   <div class="flex flex-col items-center p-4">
     <component
       :is="
-        (issues.length < 20 && Sun) ||
-        (issues.length < 50 && CloudSunRain) ||
-        CloudLightning
+        issues.some((issue) =>
+          issue.labels.some((label) => label.name.includes('critical'))
+        )
+          ? CloudLightning
+          : issues.some((issue) =>
+              issue.labels.some((label) => label.name.includes('major'))
+            )
+          ? CloudSunRain
+          : issues.some((issue) =>
+              issue.labels.some((label) => label.name.includes('minor'))
+            )
+          ? Sun
+          : Sun
       "
       :size="64"
       :color="
-        (issues.length < 20 && '#f6e00e') ||
-        (issues.length < 50 && '#f6ad55') ||
-        '#f56565'
+        issues.some((issue) =>
+          issue.labels.some((label) => label.name.includes('critical'))
+        )
+          ? '#f56565'
+          : issues.some((issue) =>
+              issue.labels.some((label) => label.name.includes('major'))
+            )
+          ? '#f6ad55'
+          : issues.some((issue) =>
+              issue.labels.some((label) => label.name.includes('minor'))
+            )
+          ? '#f6e00e'
+          : '#f6e00e'
       "
     />
     <p class="text-center text-sm font-light my-2">
-      There are currently {{ issues.length }} frontend bugs in the OSRD
-      repository.
+      Il y a actuellement {{ issues.length }} bugs front dans le dépôt OSRD.
     </p>
     <div class="flex items-center space-x-1 rounded-full bg-secondary p-1 mt-2">
-      <Badge class="h-7 border-transparent !bg-red-700 px-3 text-sm text-white">
+      <Badge
+        class="h-7 border-transparent !bg-red-700 px-3 text-sm text-white select-none"
+      >
         <TriangleAlert :size="14" class="mr-1.5" />
         critical:
         {{
@@ -56,7 +77,7 @@ const { issues } = defineProps({
         }}
       </Badge>
       <Badge
-        class="h-7 border-transparent !bg-orange-600 px-3 text-sm text-white"
+        class="h-7 border-transparent !bg-orange-600 px-3 text-sm text-white select-none"
       >
         <OctagonAlert :size="14" class="mr-1.5" />
         major:
@@ -67,7 +88,7 @@ const { issues } = defineProps({
         }}
       </Badge>
       <Badge
-        class="h-7 border-transparent !bg-yellow-500 px-3 text-sm text-gray-900"
+        class="h-7 border-transparent !bg-yellow-500 px-3 text-sm text-gray-900 select-none"
       >
         <CircleAlert :size="14" class="mr-1.5" />
         minor:
@@ -77,7 +98,7 @@ const { issues } = defineProps({
           ).length
         }}
       </Badge>
-      <Badge class="!bg-gray-600 h-7 px-3 text-sm text-white">
+      <Badge class="!bg-gray-600 h-7 px-3 text-sm text-white select-none">
         <CircleHelp :size="14" class="mr-1.5" />
         untagged:
         {{
@@ -88,13 +109,13 @@ const { issues } = defineProps({
         }}
       </Badge>
       <Badge
-        class="h-7 border-transparent !bg-green-600 px-3 text-sm text-white"
+        class="h-7 border-transparent !bg-green-600 px-3 text-sm text-white select-none"
       >
         <User :size="14" class="mr-1.5" />
         from users:
         {{
           issues.filter((issue) =>
-            issue.labels.some((label) => label.name.includes("from users"))
+            issue.labels.some((label) => label.name.includes("from:users"))
           ).length
         }}
       </Badge>
