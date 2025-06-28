@@ -1,4 +1,3 @@
-import GithubProvider from "next-auth/providers/github";
 import { Octokit } from "octokit";
 
 export const FRONT_MAINTAINERS = [
@@ -10,33 +9,24 @@ export const FRONT_MAINTAINERS = [
 ];
 
 export default defineEventHandler(async () => {
-  const octokit = new Octokit({
-    auth: useRuntimeConfig().githubToken,
-  });
-
+  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
   const repo = "osrd";
   const owner = "OpenRailAssociation";
   const requestedReviewCounts: Record<string, number> = Object.fromEntries(
-    FRONT_MAINTAINERS.map((maintainer) => [maintainer, 0])
+    FRONT_MAINTAINERS.map((m) => [m, 0])
   );
 
-  const iterator = octokit.paginate.iterator(octokit.rest.pulls.list, {
-    owner,
-    repo,
-    state: "open",
-    per_page: 100,
-  });
+  await Promise.all(
+    FRONT_MAINTAINERS.map(async (maintainer) => {
+      const result = await octokit.rest.search.issuesAndPullRequests({
+        q: `is:pr is:open review-requested:${maintainer} repo:${owner}/${repo}`,
+        per_page: 1,
+        advanced_search: true,
+      });
+      requestedReviewCounts[maintainer] = result.data.total_count;
+    })
+  );
 
-  for await (const { data: prs } of iterator) {
-    for (const pr of prs) {
-      const reviewers =
-        pr.requested_reviewers?.map((r: { login: string }) => r.login) ?? [];
-      for (const reviewer of reviewers) {
-        if (requestedReviewCounts.hasOwnProperty(reviewer)) {
-          requestedReviewCounts[reviewer]++;
-        }
-      }
-    }
-  }
   return requestedReviewCounts;
 });
+
