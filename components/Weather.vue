@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Octokit } from "octokit";
 import { Badge } from "@/components/ui/badge";
 import {
   Sun,
