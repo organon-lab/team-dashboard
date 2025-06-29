@@ -125,7 +125,7 @@ const handleBackToList = () => {
             <div class="flex items-center gap-2">
               <Thermometer-sun class="w-10 h-10 text-orange-500" />
               <h1 class="text-xl font-bold tracking-wide uppercase">
-                OSRD Frontend Dashboard
+                OSRD Team Dashboard
               </h1>
             </div>
             <div class="self-center">
