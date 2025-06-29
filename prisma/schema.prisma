@@ -28,8 +28,22 @@ model Post {
 }
 
 model Task {
-	id        Int     @id @default(autoincrement())
-	title     String
-	user      User    @relation(fields: [userId], references: [id])
-	userId    Int
+  id        Int     @id @default(autoincrement())
+  title     String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+}
+
+model Issues {
+  id        Int
+  title     String
+  labels    String[]
+  createdAt String
+  html_url  String
+}
+
+model PullRequests {
+  id        Int
+  name	    String
+  count     Int
 }

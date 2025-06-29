@@ -23,7 +23,16 @@ const rawIssues = await octokit.paginate(octokit.rest.issues.listForRepo, {
   labels: "kind:bug,area:front",
   per_page: 100,
 });
-const { data: reviewCounts } = await useFetch("/api/maintainersCapacity");
+
+const reviewCounts = ref<Record<string, number> | null>(null);
+const { data: rawReviewCounts } = await useFetch<Record<string, number>>(
+	"/api/maintainersCapacity",
+);
+if (rawReviewCounts.value) {
+	reviewCounts.value = rawReviewCounts.value;
+} else {
+	reviewCounts.value = null;
+}
 
 const chartData = computed(() =>
   reviewCounts.value
@@ -113,7 +122,7 @@ const handleBackToList = () => {
       <div class="flex" style="height: 12rem">
         <div class="side-header-section items-start">
           <div class="flex-col items-center gap-2 pl-2">
-	    <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2">
               <Thermometer-sun class="w-10 h-10 text-orange-500" />
               <h1 class="text-xl font-bold tracking-wide uppercase">
                 OSRD Frontend Dashboard
