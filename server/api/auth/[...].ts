@@ -1,6 +1,7 @@
 import GithubProvider from "next-auth/providers/github";
 import { NuxtAuthHandler } from "#auth";
 import { Octokit } from "octokit";
+import { PrismaClient } from "@prisma/client";
 
 export default NuxtAuthHandler({
   secret: useRuntimeConfig().authSecret,
@@ -37,6 +38,18 @@ export default NuxtAuthHandler({
       const isContributor = contributors.some(
         (contributor) => contributor.id === +currentUser.id,
       );
+
+      // add the user in DB if not exists
+      const prisma = new PrismaClient();
+
+      await prisma.user.upsert({
+	where: { email: currentUser.email! }, 
+	update: {},
+	create: {
+	  name: currentUser.name,
+	  email: currentUser.email!,
+	},
+      });
 
       return isContributor;
     },
