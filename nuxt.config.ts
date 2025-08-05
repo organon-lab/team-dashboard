@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "nuxt-auth-utils",
     "@sidebase/nuxt-auth",
+    "@nuxtjs/mdc",
   ],
   auth: {
     provider: {
@@ -45,8 +46,20 @@ export default defineNuxtConfig({
       },
     },
   },
+  mdc: {
+    highlight: {
+      theme: "github-dark",
+      langs: ["js", "ts"],
+      wrapperStyle: true,
+    },
+  },
   devtools: { enabled: true },
   experimental: {
     componentIslands: true,
+  },
+  app: {
+    head: {
+      title: "OSRD-team-dashboard",
+    },
   },
 });
